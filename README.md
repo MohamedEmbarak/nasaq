@@ -2,13 +2,17 @@
 
 **An Arabic-first, extensible UI system for vanilla JavaScript, React, Vue, and Angular.** Nasaq gives products an independent visual identity, shared behavior, and editable patterns for complete service journeys.
 
+Developed by the Development Team in the National Platforms Sector — National Information Center.
+
+تم التطوير بواسطة فريق التطوير في قطاع المنصات الوطنية - مركز المعلومات الوطني
+
 [Guide & live examples](https://mohamedembarak.github.io/nasaq/) · [العربية](README.ar.md) · [Coverage](docs/coverage.md) · [Architecture](docs/architecture.md) · [Extension guide](docs/extension.md) · [Validation](docs/validation.md) · [AI guide](llms.txt)
 
-The **Woven Rhythm** identity uses teal and warm ivory with an Arabic-only **نسق** wordmark. Its **Aref Ruqaa Bold lettering is exported as SVG paths**, with no font dependency to display the logo. Interface typography remains IBM Plex Sans Arabic and IBM Plex Sans. The [brand guide](brand/index.html), [artwork guidance](brand/README.md), and [brand kit ZIP](brand/nasaq-brand-kit.zip) include the wordmark and transparent loaders that animate its lettering.
+The **Woven Rhythm** identity uses teal and warm ivory with an Arabic-only **نسق** wordmark. Its **Aref Ruqaa Bold lettering is exported as SVG paths**, with no font dependency to display the logo. Interface typography remains IBM Plex Sans Arabic and IBM Plex Sans. The [brand guide](brand/index-en.html), [artwork guidance](brand/README.md), and [brand kit ZIP](brand/nasaq-brand-kit.zip) include the wordmark and transparent loaders that animate its lettering.
 
 ![Nasaq playground in the Woven Rhythm identity](docs/previews/playground.png)
 
-Preview the [layout studio](docs/previews/layouts.png) and [Gregorian/Umm al-Qura date picker](docs/previews/date-picker.png).
+Preview the [live editor in Arabic](docs/previews/component-editor-ar-dark.png), [layout studio](docs/previews/layouts.png) and [Gregorian/Umm al-Qura date picker](docs/previews/date-picker.png).
 
 Nasaq draws on **DGA Platforms Code**, the **Unified Design System** for the **Kingdom of Saudi Arabia (KSA)** — **كود المنصات، نظام التصميم الموحد، هيئة الحكومة الرقمية** — for relevant foundations and government service conventions. It adds its own design, components, and compositions. **DGA compliance is tracked as evidence and gaps; Nasaq is an independent implementation, with no claim of official endorsement or certification.** Read [DGA alignment](docs/alignment.md) before describing a product as compliant.
 
@@ -17,6 +21,8 @@ Nasaq draws on **DGA Platforms Code**, the **Unified Design System** for the **K
 Nasaq is an **Apache 2.0 public source preview, version 0.1**. Seven packages support a **77-entry component catalog** across vanilla, React, Vue, and Angular: forms, interaction, content, Saudi service patterns, and 12 layout primitives. The package scope is provisional. Nothing here is published on npm, and a source directory or a working demo does not establish production readiness.
 
 The [roadmap](docs/roadmap.md) separates planned scope, implemented work, and verified behavior. [components.json](components.json) provides the same distinctions in a form that tools and coding assistants can read. Exact framework coverage and verification must be checked there rather than inferred from the package names.
+
+The guide opens in Arabic, with a persistent English switch and keyboard search (Ctrl/Cmd + K). Every component includes Preview, Code, and Playground tabs. The playground offers editable HTML, CSS, and JavaScript, a live isolated preview, console errors, and reset controls. It uses the local vanilla implementation; framework-specific setup and API guidance remain in their respective articles. External imports are unsupported in the embedded preview. [Editor license notices](https://mohamedembarak.github.io/nasaq/licenses/editor.txt) accompany the deployed guide.
 
 ## What the system is designed to provide
 

@@ -6,3 +6,6 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .loader-previews{display:flex;gap:1.5rem;flex-wrap:wrap}.loader-previews figure{margin:0;min-width:220px;flex:1;display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;background:white;border:1px solid var(--brand-rule);border-radius:1rem}.loader-previews figure.reverse{background:var(--brand-ink);color:var(--brand-ivory)}.loader-previews figcaption{font-size:.88rem}
+
+/* Arabic is the default; English specimens keep their own reading direction. */
+html:lang(ar) body{font-family:var(--brand-arabic);line-height:1.8}html:lang(ar) h1,html:lang(ar) h2,html:lang(ar) h3,html:lang(ar) .hero-en{letter-spacing:0;line-height:1.55}html:lang(ar) .eyebrow,html:lang(ar) .hero-art .edition{letter-spacing:0}html:lang(ar) .swatch-color strong{font-size:clamp(1.1rem,2vw,1.5rem)}[lang="en"]{font-family:var(--brand-font);direction:ltr}code{direction:ltr;unicode-bidi:isolate}.hero-art .edition{left:auto;inset-inline-start:2rem}

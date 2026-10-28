@@ -1,10 +1,14 @@
 # نسق — Arabic wordmark
 
+تم التطوير بواسطة فريق التطوير في قطاع المنصات الوطنية - مركز المعلومات الوطني
+
+Developed by the Development Team in the National Platforms Sector — National Information Center.
+
 The current logo is **نسق alone**, in **Aref Ruqaa Bold**, converted to SVG paths.
 It has no accompanying symbol or Latin lettering. [decision.json](decision.json)
 records the identity, typography, palette, and motion specification.
 
-Open [the guide](index.html) or [the preview](previews/arabic-wordmark.png).
+Open the guide in [Arabic](index.html) or [English](index-en.html), or view [the preview](previews/arabic-wordmark.png).
 The teal, mint, ivory and ink palette remains. English and Arabic interface text
 continue to use IBM Plex; the logo stays Arabic in either interface language.
 

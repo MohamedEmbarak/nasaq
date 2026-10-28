@@ -24,7 +24,7 @@ These exact versions were exercised. Declared peer ranges are broader than a sin
 | `pnpm build` | Passed | Seven packages and four Vite application builds: vanilla playground, React, Vue, and Angular examples |
 | Playground TypeScript check | Passed | Run inside `pnpm build`; also available through `pnpm typecheck:playground` |
 | `pnpm test` | Passed | 8 token-contrast checks and 139 Vitest tests across 20 files, including calendar reference conversion and focused React/Vue hydration cases |
-| `pnpm test:browser` | Passed: 27 tests | 17 original and 10 expansion tests: vanilla journeys, selected component behavior, calendar switching, input/layout labs, responsive layout, wordmark-loader reduced motion, and scoped axe scans in Chromium |
+| `pnpm test:browser` | Passed: 40 tests | 17 original, 10 expansion, 3 component-reference, 5 guide-experience and 5 editor tests: vanilla journeys, selected component behavior, calendar switching, input/layout labs, responsive layout, wordmark-loader reduced motion, and scoped axe scans in Chromium |
 | `pnpm check:packages` | Passed | Seven local tarballs installed in an isolated consumer; ESM imports, canonical calendar conversion, React/Vue Button and DatePicker/Grid SSR, Angular APF import, split CSS and bundled wordmark/GIF asset exports, TypeScript consumers, calendar-data license, and two minimal-import bundle budgets |
 | React example browser suite | Passed: 2 tests | Conditional service application, modal review/focus, local request state, independent preferences, narrow Arabic layout, and selected axe scans |
 | Angular example browser script | Passed | Native form/Angular forms integration, Arabic combobox, conditional application, modal/Escape/focus, local request state, RTL, theme change, and mobile layout |
@@ -32,20 +32,37 @@ These exact versions were exercised. Declared peer ranges are broader than a sin
 | Framework calendar browser script | Passed for React, Vue, and Angular | Calendar switching, canonical labels, keyboard selection, reopening, invalid-range submission, responsive RTL/dark layout, and scoped axe scans |
 | Browser-test TypeScript check | Passed | Root browser test source type checking |
 
-The public guide adds [three regression tests](../tests/browser/guide.spec.ts),
-bringing the root suite to 30 tests. Its focused run passed all three: setup
-navigation and all 77 live reference pages, controller interaction/reset/remount,
-and a 390px Arabic/RTL accessibility check. The 27 existing root tests also
-passed against the public source copy. The documentation-only code scroll and
-API table regions support keyboard focus, and the guide scan reports no scoped
-WCAG 2.2 A/AA violations. All 77 copyable usage snippets were additionally
-initialized and destroyed with the real vanilla enhancer in Chromium.
+The refreshed guide's complete root browser suite passed all **40 tests**. The
+[component-reference tests](../tests/browser/guide.spec.ts) cover setup navigation,
+all 77 references, reset/remount and narrow RTL accessibility. Five
+[guide-experience tests](../tests/browser/guide-experience.spec.ts) cover Arabic
+as the default, persisted English preference, the white transparent dark logo,
+keyboard search and mobile navigation focus. Five
+[editor tests](../tests/browser/component-ide.spec.ts) cover HTML/CSS/JavaScript
+editing, automatic/manual updates, error recovery, reset, real enhancement,
+iframe isolation, CSP blocking, Arabic editor search, keyboard navigation,
+mobile layout, draft preservation through shell redraws and custom themes.
 
-The public-source package build, all four application builds, 139 unit tests,
-eight contrast checks and seven packed-consumer checks were rerun. Package
-archives include Apache-2.0 LICENSE and NOTICE files; fonts and calendar data
-retain their original notices. The guide is also built with the `/nasaq/` base
-path used by GitHub Pages.
+The guide production build passed with the `/nasaq/` GitHub Pages base path.
+All 77 Arabic component examples initialized inside the production editor's
+sandbox without runtime errors or failed resource responses. Scoped Chromium
+axe scans passed in light/dark and Arabic/English views; these automated checks
+do not replace manual screen-reader testing. The Arabic content audit covered
+77 component pages, 12 articles and nine guide/example routes. Both standalone
+brand guides were checked at desktop and mobile widths. Current screenshots
+are under [previews](previews/).
+
+All seven packages were rebuilt for the refreshed guide, and the playground
+TypeScript check passed. The editor loads on demand and adds no dependency to
+the published-library package manifests. Its complete runtime license notices
+are collected from the installed dependency graph and included in the deployed
+guide, together with the calendar-data and font notices.
+
+For the initial public-source snapshot, all four application builds, 139 unit
+tests, eight contrast checks and seven packed-consumer checks passed. Those
+library implementation files are unchanged by the guide refresh. Package
+archives include Apache-2.0 LICENSE and NOTICE files, and fonts/calendar data
+retain their original notices.
 
 The package-consumer script packs files locally and performs no publication. Its Angular import check loads the compiler for the consumer smoke test; it is not a production Angular AOT application build.
 

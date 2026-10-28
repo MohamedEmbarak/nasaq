@@ -1,5 +1,8 @@
-import { catalog, escape as e, type ComponentId, type Locale } from './data';
+import { catalog, escape as e, icon, type ComponentId, type Locale } from './data';
 import { componentGuides } from './component-guides';
+import { arabicComponentGuides } from './component-guides.ar';
+import { arabicArticle } from './guide-articles.ar';
+import type { IDEFiles } from './component-ide';
 import './guide.css';
 
 const sourceRoot = 'https://github.com/MohamedEmbarak/nasaq/blob/main/';
@@ -141,33 +144,255 @@ function article(topic: string, code: Code): string {
   }
 }
 
+const categoryNames: Record<string, string> = { Actions: 'الإجراءات', Forms: 'النماذج', Navigation: 'التنقّل', Feedback: 'التغذية الراجعة', Content: 'المحتوى', Platforms: 'المنصات', Layout: 'التخطيط' };
+const topicDescriptions: Record<string, readonly [string,string]> = {
+  'getting-started': ['From a fresh checkout to your first thoughtful interface. Choose your framework and make something yours.', 'من أول تشغيل إلى أول واجهة مدروسة. اختر إطار عملك، ثم ابنِ تجربة تحمل طابعك.'],
+  vanilla: ['Meaningful HTML. A little JavaScript. A foundation you can see and shape.', 'HTML واضح، وجافاسكريبت بقدر الحاجة. أساس تراه وتفهمه وتشكّله بطريقتك.'],
+  react: ['Your React state, familiar composition, one shared visual language.', 'حالة React التي تعرفها، وتركيب مرن، ولغة بصرية واحدة.'],
+  vue: ['Reactive models and expressive templates, with the details already connected.', 'حالة تفاعلية وقوالب معبّرة، وتفاصيل تعمل معًا.'],
+  angular: ['Standalone components that fit naturally into your Angular forms and application.', 'مكوّنات مستقلة تنسجم مع نماذج Angular وتطبيقك.'],
+  theming: ['Keep the system coherent. Give your product its own character.', 'حافظ على اتساق النظام، وامنح منتجك شخصيته الخاصة.'],
+  layouts: ['Start with content. Let a few clear primitives organize the space around it.', 'ابدأ بالمحتوى، ودع أدوات واضحة تنظّم المساحة من حوله.'],
+  lifecycle: ['Understand what happens before, during, and after every interaction.', 'افهم ما يحدث قبل كل تفاعل، وأثناءه، وبعده.'],
+  calendars: ['One selected day. Two calendars. Clear, reproducible date behavior.', 'يوم واحد مختار، وتقويمان للعرض، وسلوك واضح يمكن التحقّق منه.'],
+  accessibility: ['Small decisions that let more people use the complete experience.', 'قرارات صغيرة تمنح مزيدًا من الناس تجربة متكاملة.'],
+  extending: ['Make the change you need, with a contract that keeps everything connected.', 'أضف ما تحتاجه، مع عقد واضح يحافظ على ترابط النظام.'],
+  alignment: ['Saudi service conventions, independent design, and evidence you can inspect.', 'أنماط الخدمات السعودية، وتصميم مستقل، وأدلة يمكنك مراجعتها.'],
+};
+const formatIndex = (value: number, locale: Locale) => new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en', { minimumIntegerDigits: 2 }).format(value);
+
 export function renderGuide(view: string, locale: Locale, code: Code): string {
   const topic = view.split('/')[1] || 'getting-started';
-  const selected = guideTopics.find(item => item[0] === topic);
-  const title = selected?.[1] || 'Guide not found';
-  return `<div class="guide-heading"><div><p class="eyebrow">${locale === 'ar' ? 'دليل المطوّر' : 'BUILD WITH NASAQ'}</p><h1 lang="en" dir="ltr">${title}</h1></div><a class="guide-source" href="https://github.com/MohamedEmbarak/nasaq" target="_blank" rel="noopener">GitHub ↗</a></div>
-  <div class="guide-layout"><nav class="guide-nav" aria-label="${locale === 'ar' ? 'أقسام الدليل' : 'Guide topics'}">${guideTopics.map(item=>`<a href="#docs/${item[0]}" ${topic===item[0]?'aria-current="page"':''}>${item[locale==='ar'?2:1]}</a>`).join('')}<a href="#components">${locale === 'ar' ? 'مرجع المكوّنات — ٧٧' : 'Component reference — 77'} →</a></nav><article class="guide-article" lang="en" dir="ltr">${article(topic,code)}<footer class="guide-article-footer">Apache 2.0 · Independent Nasaq implementation · <a href="#components">Explore the live components →</a></footer></article></div>`;
+  const index = guideTopics.findIndex(item => item[0] === topic);
+  const selected = guideTopics[index];
+  const ar = locale === 'ar';
+  const t = (en: string, arabic: string) => ar ? arabic : en;
+  const title = selected?.[ar ? 2 : 1] || t('Guide not found', 'لم نعثر على هذا الدليل');
+  const previous = guideTopics[index - 1], next = guideTopics[index + 1];
+  return `<section class="guide-topic-header" lang="${locale}" dir="${ar ? 'rtl' : 'ltr'}">
+    <div class="guide-topic-copy"><div class="guide-kicker"><span class="guide-chip">${icon('book',15)}${t('THE PRACTICAL GUIDE','الدليل العملي')}</span><span>${formatIndex(index + 1,locale)} <span aria-hidden="true">/</span> ${formatIndex(guideTopics.length,locale)}</span></div><h1>${e(title)}</h1><p>${e(topicDescriptions[topic]?.[ar?1:0] || '')}</p><div class="guide-header-links"><a href="#components">${t('Explore live components','استكشف المكوّنات مباشرة')}${icon('arrow',16)}</a><a href="https://github.com/MohamedEmbarak/nasaq" target="_blank" rel="noopener">GitHub ${icon('code',16)}</a></div></div>
+    <div class="guide-topic-symbol" aria-hidden="true"><span>${formatIndex(index + 1,locale)}</span><i></i><b>${t('Learn. Build. Make it yours.','تعلّم. ابنِ. امنحه طابعك.')}</b></div>
+  </section>
+  <div class="guide-layout"><article class="guide-article" lang="${locale}" dir="${ar?'rtl':'ltr'}">${ar ? arabicArticle(topic,code) : article(topic,code)}
+    <footer class="guide-pagination">${previous ? `<a href="#docs/${previous[0]}"><small>${t('Previous chapter','الفصل السابق')}</small><strong>${e(previous[ar?2:1])}</strong></a>` : `<a href="#overview"><small>${t('A clear foundation','أساس واضح')}</small><strong>${t('Meet Nasaq','تعرّف على نسق')}</strong></a>`}${next ? `<a href="#docs/${next[0]}"><small>${t('Continue learning','واصل التعلّم')}</small><strong>${e(next[ar?2:1])}${icon('arrow',18)}</strong></a>` : `<a href="#components"><small>${t('Put it into practice','حوّل المعرفة إلى تجربة')}</small><strong>${t('Explore components','استكشف المكوّنات')}${icon('arrow',18)}</strong></a>`}</footer>
+    <div class="guide-article-footer"><span>Apache 2.0</span><span>${t('Independent Nasaq implementation','تنفيذ مستقل من نسق')}</span></div>
+  </article><aside class="guide-outline"><p class="guide-outline-title">${t('IN THIS GUIDE','في هذا الدليل')}</p><nav data-guide-toc aria-label="${t('On this page','أقسام هذه الصفحة')}"></nav><a class="guide-outline-help" href="#docs/extending">${icon('spark',18)}<span>${t('Have a different idea?','لديك فكرة مختلفة؟')}<strong>${t('Make it yours','خصّصه بطريقتك')}${icon('arrow',15)}</strong></span></a></aside></div>`;
+}
+
+function demoControls(id: string, locale: Locale): string {
+  const t = (en:string,ar:string) => locale==='ar'?ar:en;
+  if (['button','icon-button','button-group'].includes(id)) return `<label class="guide-control"><span>${t('Variant','النمط')}</span><select data-guide-variant data-guide-selector=".nq-button" data-guide-attribute="data-variant">${[['primary','Primary','أساسي'],['secondary','Secondary','ثانوي'],['ghost','Ghost','خفيف'],['danger','Danger','خطر'],['soft','Soft','هادئ'],['outline','Outline','حدود'],['link','Link','رابط']].map(([value,en,ar])=>`<option value="${value}">${t(en!,ar!)}</option>`).join('')}</select></label><label class="guide-control"><span>${t('Size','الحجم')}</span><select data-guide-size><option value="md">${t('Medium','متوسط')}</option><option value="sm">${t('Small','صغير')}</option><option value="lg">${t('Large','كبير')}</option></select></label>`;
+  if (['badge','alert','chip'].includes(id)) return `<label class="guide-control"><span>${t('Tone','الدلالة')}</span><select data-guide-variant data-guide-selector=".nq-${id}" data-guide-attribute="data-tone">${[['neutral','Neutral','محايد'],['info','Information','معلومات'],['success','Success','نجاح'],['warning','Warning','تحذير'],['danger','Danger','خطر']].filter(([value])=>id!=='alert'||value!=='neutral').map(([value,en,ar])=>`<option value="${value}">${t(en!,ar!)}</option>`).join('')}</select></label>`;
+  return '';
 }
 
 export function renderComponentGuide(id: string, locale: Locale, preview: (id: ComponentId) => string, code: Code): string {
   const item = catalog.find(component => component[0] === id);
-  const guide = componentGuides[id];
-  if (!item || !guide) return `<section class="guide-article"><h1>Component not found</h1><p><a href="#components">Return to the component catalog</a>.</p></section>`;
+  const dictionary = locale === 'ar' ? arabicComponentGuides : componentGuides;
+  const guide = dictionary[id];
+  const ar = locale === 'ar';
+  const t = (en:string,arabic:string) => ar?arabic:en;
+  if (!item || !guide) return `<section class="guide-article"><h1>${t('Component not found','لم نعثر على هذا المكوّن')}</h1><p><a href="#components">${t('Return to the component catalog','العودة إلى فهرس المكوّنات')}</a>.</p></section>`;
   const index = catalog.findIndex(component => component[0] === id);
   const previous = catalog[index-1], next = catalog[index+1];
-  const title = item[locale === 'ar' ? 2 : 1];
-  return `<a class="text-link guide-back" href="#components">← ${locale === 'ar' ? 'كل المكوّنات' : 'All components'}</a>
-    <div class="guide-heading"><div><p class="eyebrow">${e(item[3])} / ${locale === 'ar' ? 'مرجع المكوّن' : 'COMPONENT REFERENCE'}</p><h1>${e(title)}</h1><p class="guide-lead" lang="en" dir="ltr">${e(guide.summary)}</p></div>${guide.source ? `<span class="guide-source">${source(guide.source, 'View source')}</span>` : ''}</div>
-    <div class="component-guide-layout"><article class="guide-article component-guide">
-      <section class="guide-live" aria-labelledby="live-title"><div class="guide-live-heading"><h2 id="live-title">${locale === 'ar' ? 'جرّبه مباشرة' : 'Live example'}</h2><button class="nq-button" data-variant="ghost" data-size="sm" type="button" id="reset-component-demo" data-action="reset-component-demo">${locale === 'ar' ? 'إعادة المثال' : 'Reset example'}</button></div><div class="component-preview guide-preview">${preview(item[0])}</div><p>${locale === 'ar' ? 'جرّب لوحة المفاتيح وتبديل اللغة والمظهر من الشريط العلوي.' : 'Try the keyboard, then switch language or color mode using the top bar.'}</p></section>
-      <div lang="en" dir="ltr"><section id="component-usage"><h2>Usage</h2><p>Semantic HTML with the shared stylesheet. Interactive <code>data-nq</code> hooks require the <a href="#docs/vanilla">vanilla enhancer</a>.</p>${code(guide.usage)}</section>
-      ${guide.variants?.length ? `<section id="component-variants"><h2>Variants & composition</h2>${list(guide.variants)}</section>` : ''}
-      <section id="component-api"><h2>API & markup contract</h2><div class="guide-table-wrap" tabindex="0" role="region" aria-label="Scrollable reference table"><table class="nq-table"><thead><tr><th>Name</th><th>Type / values</th><th>Purpose</th></tr></thead><tbody>${guide.api.map(property=>`<tr><td><code>${e(property.name)}</code></td><td><code>${e(property.type)}</code></td><td>${e(property.description)}</td></tr>`).join('')}</tbody></table></div></section>
-      <section id="component-lifecycle"><h2>Lifecycle & interaction</h2>${list(guide.lifecycle,true)}</section>
-      <section id="component-accessibility"><h2>Accessibility</h2>${list(guide.accessibility)}</section>
-      <section id="component-frameworks"><h2>In your framework</h2>${guide.frameworkNotes ? `<p>${e(guide.frameworkNotes)}</p>` : '<p>Use the adapter component to keep rendering and lifecycle in your framework.</p>'}<div class="guide-framework-links">${['react','vue','angular'].map(f=>`<a href="#docs/${f}">${f[0]!.toUpperCase()+f.slice(1)} setup</a> ${source(`packages/${f}/README.md`, `${f[0]!.toUpperCase()+f.slice(1)} API`)}`).join('')}</div><p>Framework prop names follow their own conventions; the markup table above does not imply identical prop names in every adapter.</p></section>
-      ${guide.limitations?.length ? `<section id="component-boundaries"><h2>Boundaries</h2>${list(guide.limitations)}</section>` : ''}
-      ${guide.related?.length ? `<section><h2>Related components</h2><div class="guide-related">${guide.related.map(related=>{const c=catalog.find(c=>c[0]===related);return c?`<a href="#component/${c[0]}">${e(c[1])} →</a>`:'';}).join('')}</div></section>` : ''}</div>
-      <footer class="guide-pagination">${previous?`<a href="#component/${previous[0]}"><small>Previous</small>${e(previous[1])}</a>`:'<span></span>'}${next?`<a href="#component/${next[0]}"><small>Next</small>${e(next[1])} →</a>`:''}</footer>
-    </article><aside class="guide-component-aside" lang="en" dir="ltr"><span class="eyebrow">ON THIS PAGE</span>${[['usage','Usage'],['api','API & markup'],['lifecycle','Lifecycle'],['accessibility','Accessibility'],['frameworks','Frameworks']].map(([key,label])=>`<button type="button" data-doc-section="component-${key}">${label}</button>`).join('')}<hr class="nq-divider"><p>Keep the shared behavior. Adapt tokens, documented variants, and composition.</p><a href="#docs/extending">Extension guide →</a><a href="#docs/accessibility">Accessibility guide →</a></aside></div>`;
+  const title = item[ar?2:1];
+  const toc = [['usage',t('Usage','الاستخدام')],['api',t('API & markup','واجهة البرمجة')],['lifecycle',t('Lifecycle','دورة الحياة')],['accessibility',t('Accessibility','الإتاحة')],['frameworks',t('Frameworks','أطر العمل')]];
+  return `<div class="component-guide-header" lang="${locale}" dir="${ar?'rtl':'ltr'}"><a class="guide-back" href="#components">${icon('arrow',16)}${t('All components','كل المكوّنات')}</a>
+    <div class="guide-kicker"><span class="guide-chip">${icon('layers',15)}${e(ar?categoryNames[item[3]]||item[3]:item[3])}</span><code dir="ltr">${item[0]}</code><span class="guide-live-badge"><i></i>${t('LIVE EXAMPLE','مثال تفاعلي')}</span></div>
+    <div class="guide-title-row"><div><h1>${e(title)}</h1><p class="guide-lead">${e(guide.summary)}</p></div><div class="guide-title-actions"><button type="button" data-guide-launch-editor>${icon('spark',16)}${t('Edit live','عدّل مباشرة')}</button>${guide.source?source(guide.source,t('View source','تصفّح المصدر')):''}<button type="button" data-guide-section="component-api">${t('API reference','مرجع البرمجة')}${icon('arrow',16)}</button></div></div>
+    <div class="guide-compatibility"><span>${t('One foundation. Your framework.','أساس واحد. وإطار العمل الذي تختاره.')}</span><div>${['Vanilla','React','Vue','Angular'].map(name=>`<a href="#docs/${name.toLowerCase()}" dir="ltr">${name}</a>`).join('')}</div></div>
+  </div>
+  <div class="component-guide-layout"><article class="guide-article component-guide" lang="${locale}" dir="${ar?'rtl':'ltr'}">
+    <section class="guide-demo" data-guide-demo data-guide-key="${item[0]}:${locale}" data-guide-usage="${e(guide.usage)}" data-guide-initial-dir="${ar?'rtl':'ltr'}" data-guide-locale="${locale}" data-guide-title="${e(title)}" aria-label="${t('Interactive component example','مثال تفاعلي للمكوّن')}">
+      <div class="guide-demo-top"><div class="guide-demo-tabs" role="tablist" aria-label="${t('Example view','عرض المثال')}"><button type="button" role="tab" id="guide-preview-tab" aria-controls="guide-preview-panel" aria-selected="true" tabindex="0" data-guide-tab="preview">${icon('grid',17)}${t('Preview','المعاينة')}</button><button type="button" role="tab" id="guide-code-tab" aria-controls="guide-code-panel" aria-selected="false" tabindex="-1" data-guide-tab="code">${icon('code',17)}${t('Code','الشفرة')}</button><button type="button" role="tab" id="guide-playground-tab" aria-controls="guide-playground-panel" aria-selected="false" tabindex="-1" data-guide-tab="playground">${icon('spark',17)}${t('Playground','محرّر مباشر')}</button></div><button type="button" class="guide-copy-button" data-guide-copy data-copy="${e(guide.usage)}" aria-label="${t('Copy example markup','نسخ شفرة المثال')}">${icon('copy',16)}<span>${t('Copy','نسخ')}</span></button></div>
+      <div role="tabpanel" id="guide-preview-panel" aria-labelledby="guide-preview-tab" data-guide-panel="preview">
+        <div class="component-preview guide-preview" data-guide-canvas tabindex="0" role="region" aria-label="${t('Component preview canvas','مساحة معاينة المكوّن')}" data-surface="grid" dir="${ar?'rtl':'ltr'}">${preview(item[0])}</div>
+        <div class="guide-demo-controls">${demoControls(id,locale)}<div class="guide-direction-control" role="group" aria-label="${t('Preview direction','اتجاه المعاينة')}"><span>${t('Direction','الاتجاه')}</span><div dir="ltr"><button type="button" data-guide-direction="rtl" aria-pressed="${ar}">RTL</button><button type="button" data-guide-direction="ltr" aria-pressed="${!ar}">LTR</button></div></div><label class="guide-control"><span>${t('Surface','الخلفية')}</span><select data-guide-surface><option value="grid">${t('Grid','شبكة')}</option><option value="plain">${t('Plain','صافية')}</option><option value="soft">${t('Soft','هادئة')}</option></select></label><button class="guide-reset" type="button" id="reset-component-demo" data-action="reset-component-demo">${t('Reset','إعادة الضبط')}</button></div>
+      </div>
+      <div role="tabpanel" id="guide-code-panel" aria-labelledby="guide-code-tab" data-guide-panel="code" hidden><section id="component-usage"><div class="guide-code-intro"><h2 data-guide-ignore>${t('Use this recipe','استخدم هذا المثال')}</h2><span dir="ltr">HTML</span></div><p>${t('Load the shared stylesheet. Interactive data-nq hooks use the vanilla enhancer.','حمّل ملف الأنماط المشترك. تستخدم الخطافات التفاعلية data-nq أداة التحسين لجافاسكريبت.')} <a href="#docs/vanilla">${t('Setup guide','دليل الإعداد')}${icon('arrow',14)}</a></p>${code(guide.usage)}</section></div>
+      <div role="tabpanel" id="guide-playground-panel" aria-labelledby="guide-playground-tab" data-guide-panel="playground" hidden><div data-guide-ide></div></div>
+      <div class="guide-demo-footnote"><span>${icon('code',14)}${t('Real components. Real interaction.','مكوّنات حقيقية، وتفاعل فعلي.')}</span><span>${t('Try Tab, arrows & Escape','جرّب Tab والأسهم وEscape')}</span></div>
+    </section>
+    ${guide.variants?.length ? `<section id="component-variants" class="guide-content-section"><div class="guide-section-heading"><span>${icon('palette',19)}</span><h2>${t('Variants & composition','أنماط تناسب تجربتك')}</h2></div><div class="guide-variant-list">${guide.variants.map(variant=>`<span>${e(variant)}</span>`).join('')}</div></section>`:''}
+    <section id="component-api" class="guide-content-section"><div class="guide-section-heading"><span>${icon('code',19)}</span><h2>${t('API & markup contract','واجهة البرمجة وعقد البنية')}</h2></div><p class="guide-section-intro">${t('The small details that connect appearance, state, and behavior.','التفاصيل التي تربط المظهر والحالة والسلوك.')}</p><div class="guide-table-wrap" tabindex="0" role="region" aria-label="${t('Scrollable API reference','جدول مرجع البرمجة القابل للتمرير')}"><table class="nq-table"><thead><tr><th scope="col">${t('Name','الاسم')}</th><th scope="col">${t('Type / values','النوع والقيم')}</th><th scope="col">${t('Purpose','الاستخدام')}</th></tr></thead><tbody>${guide.api.map(property=>`<tr><td><code dir="ltr">${e(property.name)}</code></td><td><code dir="auto">${e(property.type)}</code></td><td>${e(property.description)}</td></tr>`).join('')}</tbody></table></div></section>
+    <section id="component-lifecycle" class="guide-content-section"><div class="guide-section-heading"><span>${icon('clock',19)}</span><h2>${t('From mount to cleanup','من الإنشاء إلى التنظيف')}</h2></div><p class="guide-section-intro">${t('Follow the component through its lifecycle and interaction states.','تتبّع دورة حياة المكوّن وحالات التفاعل خطوة بخطوة.')}</p><ol class="guide-lifecycle">${guide.lifecycle.map(step=>`<li><p>${e(step)}</p></li>`).join('')}</ol></section>
+    <section id="component-accessibility" class="guide-content-section"><div class="guide-section-heading"><span>${icon('globe',19)}</span><h2>${t('An experience more people can use','تجربة يستطيع مزيد من الناس استخدامها')}</h2></div><p class="guide-section-intro">${t('Keep these relationships intact when you customize.','حافظ على هذه العلاقات عند تخصيص المكوّن.')}</p><ul class="guide-checklist">${guide.accessibility.map(item=>`<li>${icon('check',17)}<span>${e(item)}</span></li>`).join('')}</ul></section>
+    <section id="component-frameworks" class="guide-content-section"><div class="guide-section-heading"><span>${icon('layers',19)}</span><h2>${t('At home in your framework','ينسجم مع إطار عملك')}</h2></div>${guide.frameworkNotes?`<p>${e(guide.frameworkNotes)}</p>`:`<p>${t('Use the native adapter so your framework owns rendering, state, and cleanup.','استخدم المكوّن الأصلي ليبقى العرض والحالة والتنظيف ضمن إطار عملك.')}</p>`}<div class="guide-framework-links">${['react','vue','angular'].map(f=>`<div><a href="#docs/${f}"><strong dir="ltr">${f[0]!.toUpperCase()+f.slice(1)}</strong><span>${t('Setup guide','دليل الإعداد')}${icon('arrow',15)}</span></a>${source(`packages/${f}/README.md`,t('API reference','مرجع البرمجة'))}</div>`).join('')}</div><p class="guide-small-note">${t('Each adapter follows its framework conventions. Markup attributes are not necessarily identical to component props.','يتبع كل مكيّف اصطلاحات إطار عمله. قد تختلف أسماء خصائص المكوّن عن سمات HTML.')}</p></section>
+    ${guide.limitations?.length?`<section id="component-boundaries" class="guide-content-section guide-boundaries"><h2>${t('Know the boundaries','تعرّف على حدود المكوّن')}</h2>${list(guide.limitations)}</section>`:''}
+    ${guide.related?.length?`<section class="guide-content-section"><div class="guide-section-heading"><span>${icon('grid',19)}</span><h2>${t('Build the next piece','أكمل تجربتك')}</h2></div><div class="guide-related">${guide.related.map(related=>{const c=catalog.find(c=>c[0]===related);const other=dictionary[related];return c?`<a href="#component/${c[0]}"><span class="guide-related-category">${e(ar?categoryNames[c[3]]||c[3]:c[3])}</span><strong>${e(c[ar?2:1])}${icon('arrow',18)}</strong>${other?`<p>${e(other.summary)}</p>`:''}</a>`:'';}).join('')}</div></section>`:''}
+    <footer class="guide-pagination">${previous?`<a href="#component/${previous[0]}"><small>${t('Previous component','المكوّن السابق')}</small><strong>${e(previous[ar?2:1])}</strong></a>`:'<span></span>'}${next?`<a href="#component/${next[0]}"><small>${t('Explore next','اكتشف التالي')}</small><strong>${e(next[ar?2:1])}${icon('arrow',18)}</strong></a>`:''}</footer>
+  </article><aside class="guide-outline"><p class="guide-outline-title">${t('ON THIS PAGE','في هذه الصفحة')}</p><nav aria-label="${t('On this page','أقسام هذه الصفحة')}">${toc.map(([key,label])=>`<button type="button" data-guide-section="component-${key}">${label}</button>`).join('')}</nav><a class="guide-outline-help" href="#docs/extending">${icon('spark',18)}<span>${t('Keep the foundation.','احتفظ بالأساس.')}<strong>${t('Make it yours.','وامنحه طابعك.')}${icon('arrow',15)}</strong></span></a></aside></div>`;
+}
+
+type GuideSession = {
+  key: string;
+  tab: string;
+  draft?: IDEFiles;
+  direction?: 'ltr' | 'rtl';
+  surface?: string;
+  variant?: string;
+  size?: string;
+};
+// One current route only: preserve work through shell redraws, not across visits.
+let guideSession: GuideSession | undefined;
+
+/** Owns only guide controls; component examples keep their normal vanilla lifecycle. */
+export function bindGuide(root: HTMLElement): () => void {
+  const demo = root.querySelector<HTMLElement>('[data-guide-demo]');
+  const canvas = demo?.querySelector<HTMLElement>('[data-guide-canvas]');
+  const key = demo?.dataset.guideKey;
+  if (!key) guideSession = undefined;
+  else if (guideSession?.key !== key) guideSession = { key, tab: 'preview' };
+  const session = guideSession;
+  if (demo && canvas) {
+    const direction = getComputedStyle(root).direction === 'rtl' ? 'rtl' : 'ltr';
+    canvas.dir = session?.direction || direction;
+    demo.dataset.guideInitialDir = direction;
+    demo.querySelectorAll<HTMLElement>('[data-guide-direction]').forEach(control=>control.setAttribute('aria-pressed',String(control.dataset.guideDirection===canvas.dir)));
+  }
+  const toc = root.querySelector<HTMLElement>('[data-guide-toc]');
+  if (toc) {
+    const headings = [...root.querySelectorAll<HTMLHeadingElement>('.guide-article h2:not([data-guide-ignore])')];
+    toc.innerHTML = headings.map((heading,index) => {
+      heading.id ||= `guide-section-${index + 1}`;
+      return `<button type="button" data-guide-section="${e(heading.id)}">${e(heading.textContent || '')}</button>`;
+    }).join('');
+  }
+  const tabs = [...(demo?.querySelectorAll<HTMLButtonElement>('[data-guide-tab]') || [])];
+  let editorDispose: (() => void) | undefined;
+  let editorLoading = false;
+  let disposed = false;
+  const loadEditor = async () => {
+    const host = demo?.querySelector<HTMLElement>('[data-guide-ide]');
+    if (!host || editorDispose || editorLoading || disposed) return;
+    editorLoading = true;
+    const ar = demo?.dataset.guideLocale === 'ar';
+    host.innerHTML = `<p class="guide-editor-loading" role="status">${ar ? 'جارٍ تجهيز المحرّر…' : 'Preparing your playground…'}</p>`;
+    try {
+      const { mountComponentIDE } = await import('./component-ide');
+      if (disposed) return;
+      editorDispose = mountComponentIDE(host, {
+        html: demo?.querySelector('#guide-code-panel pre code')?.textContent || demo?.dataset.guideUsage || '',
+        locale: ar ? 'ar' : 'en',
+        title: demo?.dataset.guideTitle || '',
+        draft: session?.draft,
+        onDraftChange: draft => {
+          if (session && guideSession === session) session.draft = draft;
+        },
+      });
+    } catch {
+      if (!disposed) host.innerHTML = `<div class="guide-editor-loading" role="alert"><p>${ar ? 'تعذّر تحميل المحرّر. تحقّق من اتصالك ثم حاول مجددًا.' : 'The editor could not load. Check your connection and try again.'}</p><button type="button" class="nq-button" data-variant="secondary" data-guide-retry>${ar ? 'إعادة المحاولة' : 'Try again'}</button></div>`;
+    } finally { editorLoading = false; }
+  };
+  const activateTab = (value: string, focus = false) => {
+    if (session) session.tab = value;
+    for (const tab of tabs) {
+      const selected = tab.dataset.guideTab === value;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      if (selected && focus) tab.focus();
+    }
+    demo?.querySelectorAll<HTMLElement>('[data-guide-panel]').forEach(panel => panel.hidden = panel.dataset.guidePanel !== value);
+    if (value === 'playground') void loadEditor();
+  };
+  const updateCode = () => {
+    if (!demo || !canvas) return;
+    const template = document.createElement('template');
+    template.innerHTML = demo.dataset.guideUsage || '';
+    const variant = demo.querySelector<HTMLSelectElement>('[data-guide-variant]');
+    const size = demo.querySelector<HTMLSelectElement>('[data-guide-size]');
+    if (variant) template.content.querySelector(variant.dataset.guideSelector!)?.setAttribute(variant.dataset.guideAttribute!, variant.value);
+    if (size) template.content.querySelector('.nq-button')?.setAttribute('data-size', size.value);
+    let markup = (variant || size) ? template.innerHTML : demo.dataset.guideUsage || '';
+    if (canvas.dir !== demo.dataset.guideInitialDir) markup = `<div dir="${canvas.dir}">\n${markup}\n</div>`;
+    const code = demo.querySelector<HTMLElement>('#guide-code-panel pre code');
+    if (code) code.textContent = markup;
+    demo.querySelectorAll<HTMLElement>('[data-copy]').forEach(button=>button.dataset.copy=markup);
+  };
+  const variant = demo?.querySelector<HTMLSelectElement>('[data-guide-variant]');
+  if (variant && canvas) {
+    const initial = canvas.querySelector(variant.dataset.guideSelector!)?.getAttribute(variant.dataset.guideAttribute!) || 'primary';
+    const value = session?.variant || initial;
+    if ([...variant.options].some(option=>option.value===value)) variant.value=value;
+    if (session?.variant) canvas.querySelector(variant.dataset.guideSelector!)?.setAttribute(variant.dataset.guideAttribute!,variant.value);
+  }
+  const size = demo?.querySelector<HTMLSelectElement>('[data-guide-size]');
+  if (size && canvas && session?.size) {
+    size.value=session.size;
+    canvas.querySelector('.nq-button')?.setAttribute('data-size',size.value);
+  }
+  const surface = demo?.querySelector<HTMLSelectElement>('[data-guide-surface]');
+  if (surface && canvas && session?.surface) {
+    surface.value=session.surface;
+    canvas.dataset.surface=surface.value;
+  }
+  if (session?.variant || session?.size || session?.direction) updateCode();
+  const onReset = (event: Event) => {
+    if ((event.target as Element).closest('[data-action="reset-component-demo"]')) guideSession=undefined;
+  };
+  const onClick = (event: Event) => {
+    const button = (event.target as Element).closest<HTMLElement>('button');
+    if (!button || !root.contains(button)) return;
+    if (button.dataset.guideTab) activateTab(button.dataset.guideTab);
+    if (button.hasAttribute('data-guide-retry')) void loadEditor();
+    if (button.hasAttribute('data-guide-launch-editor')) {
+      activateTab('playground', true);
+      demo?.scrollIntoView({ behavior:'instant', block:'start' });
+    }
+    if (button.dataset.guideDirection && canvas) {
+      canvas.dir = button.dataset.guideDirection;
+      if (session) session.direction=canvas.dir === 'rtl' ? 'rtl' : 'ltr';
+      demo?.querySelectorAll<HTMLElement>('[data-guide-direction]').forEach(control=>control.setAttribute('aria-pressed',String(control.dataset.guideDirection===canvas.dir)));
+      updateCode();
+    }
+    if (button.dataset.guideSection) {
+      if (button.dataset.guideSection==='component-usage') activateTab('code');
+      const target = root.querySelector<HTMLElement>(`#${CSS.escape(button.dataset.guideSection)}`);
+      target?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      target?.setAttribute('tabindex','-1');
+      target?.focus({ preventScroll:true });
+    }
+  };
+  const onChange = (event: Event) => {
+    const select=event.target as HTMLSelectElement;
+    if (!canvas || !demo) return;
+    if (select.matches('[data-guide-surface]')) {canvas.dataset.surface=select.value;if(session)session.surface=select.value;}
+    if (select.matches('[data-guide-variant]')) {
+      canvas.querySelector(select.dataset.guideSelector!)?.setAttribute(select.dataset.guideAttribute!,select.value);
+      if (session) session.variant=select.value;
+      updateCode();
+    }
+    if (select.matches('[data-guide-size]')) {
+      canvas.querySelector('.nq-button')?.setAttribute('data-size',select.value);
+      if (session) session.size=select.value;
+      updateCode();
+    }
+  };
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const tab=(event.target as Element).closest<HTMLButtonElement>('[data-guide-tab]');
+    if (!tab || !tabs.includes(tab) || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    const current=tabs.indexOf(tab);
+    const rtl=getComputedStyle(tab.parentElement!).direction==='rtl';
+    const delta=(event.key==='ArrowRight'?1:-1)*(rtl?-1:1);
+    const index=event.key==='Home'?0:event.key==='End'?tabs.length-1:(current+delta+tabs.length)%tabs.length;
+    activateTab(tabs[index]!.dataset.guideTab!,true);
+  };
+  root.addEventListener('click',onReset,true);
+  root.addEventListener('click',onClick);
+  root.addEventListener('change',onChange);
+  root.addEventListener('keydown',onKeyDown);
+  const outlineButtons=[...root.querySelectorAll<HTMLButtonElement>('[data-guide-section]')].filter(button=>button.closest('.guide-outline'));
+  const observer=new IntersectionObserver(entries=>{
+    const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    for(const button of outlineButtons){
+      if(button.dataset.guideSection===visible.target.id)button.setAttribute('aria-current','location');
+      else button.removeAttribute('aria-current');
+    }
+  },{rootMargin:'-125px 0px -55% 0px',threshold:0});
+  for(const button of outlineButtons){const target=root.querySelector(`#${CSS.escape(button.dataset.guideSection!)}`);if(target)observer.observe(target);}
+  if (session) activateTab(session.tab);
+  return()=>{disposed=true;editorDispose?.();root.removeEventListener('click',onReset,true);root.removeEventListener('click',onClick);root.removeEventListener('change',onChange);root.removeEventListener('keydown',onKeyDown);observer.disconnect();};
 }

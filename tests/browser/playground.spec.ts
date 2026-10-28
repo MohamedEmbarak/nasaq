@@ -239,9 +239,10 @@ for (const locale of ['en', 'ar'] as const) {
         });
       }
       if (width === 390) {
-        await page.getByRole('button', { name: locale === 'ar' ? 'تبديل التنقل' : 'Toggle navigation' }).click();
+        await page.locator('.mobile-menu').click();
         const sidebar = page.locator('.sidebar');
         await expect(sidebar).toHaveClass(/mobile-open/u);
+        await sidebar.getByText(locale === 'ar' ? 'تجارب متكاملة' : 'Complete journeys', { exact: true }).click();
         await sidebar.locator('a[href="#discover"]').click();
         await expect(page).toHaveURL(/#discover$/u);
         await expect(sidebar).not.toHaveClass(/mobile-open/u);

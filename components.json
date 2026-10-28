@@ -1354,7 +1354,7 @@
         "Selection does not upload files; transport, server validation, and progress belong to the application."
       ],
       "sourceType": "native",
-      "documentation": "https://mohamedembarak.github.io/nasaq/#component/file-upload"
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/upload"
     },
     {
       "id": "stepper",
@@ -1413,7 +1413,7 @@
       "evidence": [],
       "notes": [],
       "sourceType": "static",
-      "documentation": "https://mohamedembarak.github.io/nasaq/#component/empty-state"
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/empty"
     },
     {
       "id": "input-group",

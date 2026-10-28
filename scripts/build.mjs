@@ -50,6 +50,7 @@ for (const name of [
     cpSync(resolve(root, "brand/assets"), resolve(cwd, "dist/assets"), {recursive: true});
   }
 }
+run("node", ["scripts/build-preview.mjs"]);
 if (!process.argv.includes("--packages")) {
   run("node", ["scripts/prepare-demo.mjs"]);
   run("pnpm", [

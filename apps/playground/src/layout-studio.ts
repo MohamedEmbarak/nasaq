@@ -20,6 +20,13 @@ const layoutState = {
   padding: 4,
   width: "100%",
 };
+const layoutPatterns = [
+  ["grid", "Grid", "شبكة"],
+  ["stack", "Stack", "ترتيب عمودي"],
+  ["inline", "Inline", "ترتيب أفقي"],
+  ["columns", "Columns", "أعمدة"],
+  ["sidebar", "Sidebar", "تخطيط جانبي"],
+] as const;
 function markup(locale: Locale) {
   const props: LayoutProps = {
     gap: layoutState.gap as 4,
@@ -43,7 +50,7 @@ export function layoutPage(locale: Locale) {
   const t = words(locale);
   return `<div class="page-heading"><div><div class="eyebrow">${t("COMPOSITION, MADE SIMPLE", "تركيب بسيط")}</div><h1>${t("A little structure. Endless possibilities.", "قليل من التنظيم. إمكانات بلا حدود.")}</h1><p>${t("Choose a pattern, adjust its rhythm, and copy working markup. Responsive columns begin with one on small screens.", "اختر نمطًا واضبط المسافات وانسخ الشفرة. تبدأ الأعمدة المتجاوبة بعمود واحد على الشاشات الصغيرة.")}</p></div></div>
   <section class="layout-studio"><div class="layout-studio-controls">
-  <label class="nq-field"><span class="nq-label">${t("Pattern", "النمط")}</span><select class="nq-select" id="layout-pattern">${["grid", "stack", "inline", "columns", "sidebar"].map((v) => `<option value="${v}" ${layoutState.pattern === v ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+  <label class="nq-field"><span class="nq-label">${t("Pattern", "النمط")}</span><select class="nq-select" id="layout-pattern">${layoutPatterns.map(([value, en, ar]) => `<option value="${value}" ${layoutState.pattern === value ? "selected" : ""}>${t(en, ar)}</option>`).join("")}</select></label>
   <label class="nq-field"><span class="nq-label">${t("Large-screen columns", "أعمدة الشاشة الكبيرة")}</span><input class="nq-input" type="number" id="layout-columns" min="1" max="6" value="${layoutState.columns}"></label>
   <label class="nq-field"><span class="nq-label">${t("Gap token", "رمز التباعد")}</span><input class="nq-input" type="number" id="layout-gap" min="0" max="16" value="${layoutState.gap}"></label>
   <label class="nq-field"><span class="nq-label">${t("Padding token", "رمز الحشو")}</span><input class="nq-input" type="number" id="layout-padding" min="0" max="16" value="${layoutState.padding}"></label>
@@ -102,7 +109,7 @@ export function bindLayoutStudio(
   return () => root.removeEventListener("input", update);
 }
 
-export function inputPage(locale: Locale) {
+export function inputPage(locale: Locale, mode: "light" | "dark" = "light") {
   const t = words(locale);
   const fields: [string, string, string, string][] = [
     [
@@ -129,7 +136,7 @@ export function inputPage(locale: Locale) {
       "رابط الموقع",
       'autocomplete="url" placeholder="https://example.test" dir="ltr"',
     ],
-    ["search", "Search", "بحث", 'placeholder="Search / ابحث"'],
+    ["search", "Search", "بحث", `placeholder="${t("Search", "ابحث")}"`],
     [
       "password",
       "Password",
@@ -162,11 +169,11 @@ export function inputPage(locale: Locale) {
   <form id="native-input-lab" class="nq-stack" style="--nq-layout-gap:1.5rem"><div class="nq-grid" style="--nq-layout-columns:1;--nq-layout-columns-md:2;--nq-layout-columns-xl:3;--nq-layout-gap:1rem">${fields.map(([type, en, ar, attrs]) => `<label class="nq-field"><span class="nq-label">${t(en, ar)} <code>${type}</code></span><input type="${type}" class="${type === "checkbox" ? "nq-checkbox" : type === "radio" ? "nq-radio" : type === "range" ? "nq-slider" : "nq-input"}" name="${type}" ${attrs}></label>`).join("")}</div>
   <input type="hidden" name="hidden" value="demo-context">
   <fieldset class="nq-field"><legend class="nq-label">${t("Common platform fields", "حقول المنصات الشائعة")}</legend><div class="nq-grid" style="--nq-layout-columns-md:2;--nq-layout-gap:1rem">
-  <label class="nq-field"><span class="nq-label">${t("IBAN format example", "مثال تنسيق آيبان")}</span><input class="nq-input" name="iban" dir="ltr" pattern="SA[0-9]{22}" placeholder="SA + 22 digits" aria-describedby="iban-help"><span class="nq-hint" id="iban-help">${t("Format only. Account existence and checksum need separate validation.", "تنسيق فقط. وجود الحساب وصحة التحقق يحتاجان تحققًا منفصلًا.")}</span></label>
+  <label class="nq-field"><span class="nq-label">${t("IBAN format example", "مثال تنسيق آيبان")}</span><input class="nq-input" name="iban" dir="ltr" pattern="SA[0-9]{22}" placeholder="${t("SA + 22 digits", "SA + ٢٢ رقمًا")}" aria-describedby="iban-help"><span class="nq-hint" id="iban-help">${t("Format only. Account existence and checksum need separate validation.", "تنسيق فقط. وجود الحساب وصحة التحقق يحتاجان تحققًا منفصلًا.")}</span></label>
   <label class="nq-field"><span class="nq-label">${t("National ID / Iqama format example", "مثال تنسيق الهوية / الإقامة")}</span><input class="nq-input" name="identity" inputmode="numeric" pattern="[12][0-9]{9}" maxlength="10" aria-describedby="id-help"><span class="nq-hint" id="id-help">${t("Use fictional digits. This does not verify identity.", "استخدم أرقامًا وهمية. هذا الحقل لا يثبت الهوية.")}</span></label>
   <label class="nq-field"><span class="nq-label">${t("Street address", "عنوان الشارع")}</span><input class="nq-input" name="address" autocomplete="street-address"></label>
-  <label class="nq-field"><span class="nq-label">${t("Amount in SAR", "المبلغ بالريال السعودي")}</span><span class="nq-input-group"><input class="nq-input" name="amount" type="number" min="0" step="0.01"><span class="nq-input-addon">SAR</span></span></label>
-  </div></fieldset><div class="nq-inline" style="--nq-layout-gap:1rem"><input type="submit" class="nq-button" value="${t("Inspect form values", "عرض قيم النموذج")}"><input type="reset" class="nq-button" data-variant="secondary" value="${t("Reset", "إعادة ضبط")}"><input type="button" class="nq-button" data-variant="ghost" value="${t("Native button", "زر أصلي")}" data-action="demo-info"><input type="image" src="${import.meta.env.BASE_URL}brand/assets/nasaq-symbol.svg" width="32" height="32" alt="${t("Submit using image button", "إرسال بزر صورة")}" name="image-submit"></div>
+  <label class="nq-field"><span class="nq-label">${t("Amount in SAR", "المبلغ بالريال السعودي")}</span><span class="nq-input-group"><input class="nq-input" name="amount" type="number" min="0" step="0.01"><span class="nq-input-addon">${t("SAR", "ر.س")}</span></span></label>
+  </div></fieldset><div class="nq-inline" style="--nq-layout-gap:1rem"><input type="submit" class="nq-button" value="${t("Inspect form values", "عرض قيم النموذج")}"><input type="reset" class="nq-button" data-variant="secondary" value="${t("Reset", "إعادة ضبط")}"><input type="button" class="nq-button" data-variant="ghost" value="${t("Native button", "زر أصلي")}" data-action="demo-info"><input type="image" src="${import.meta.env.BASE_URL}brand/assets/nasaq-wordmark${mode === "dark" ? "-white" : ""}.svg" width="64" height="50" style="object-fit:contain" alt="${t("Submit using image button", "إرسال بزر صورة")}" name="image-submit"></div>
   <p class="nq-hint">${t("All 22 standard input types are represented, including hidden and image buttons. Browser support for month/week and pickers varies. Files and entered values stay in this tab.", "جميع أنواع الإدخال القياسية الـ٢٢ موجودة، بما فيها الحقول المخفية وأزرار الصور. يختلف دعم الشهر والأسبوع والمنتقيات حسب المتصفح. تبقى القيم والملفات في علامة التبويب هذه.")}</p>
   <pre id="native-input-output" class="input-lab-output" aria-live="polite" dir="ltr">{}</pre></form>`;
 }

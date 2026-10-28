@@ -6,7 +6,7 @@ import json
 ROOT = Path(__file__).resolve().parent
 FILES = ['README.md', 'brand.css', 'build-assets.py', 'build-loader.mjs',
          'build-kit.py', 'decision.json', 'editable-wordmark.svg', 'fonts.css',
-         'index.html', 'palette.json']
+         'index.html', 'index-en.html', 'palette.json']
 PREVIEWS = ['arabic-wordmark.html', 'arabic-wordmark.png', 'arabic-dark-specimen.png',
             'brand-board-desktop.png', 'brand-board-mobile.png', 'brand-cover.png']
 FAMILIES = ['arefruqaa', 'ibmplexsans', 'ibmplexsansarabic']

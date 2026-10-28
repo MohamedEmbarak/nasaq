@@ -11,3 +11,5 @@ apps/playground/public/NOTICE
 *.tsbuildinfo
 .env
 .env.*
+
+apps/playground/src/generated/

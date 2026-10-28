@@ -9,7 +9,10 @@ import "@nasaq/styles/reset.css";
 import "@nasaq/styles/styles.css";
 import "./playground.css";
 import "./expansion.css";
-import { renderGuide, renderComponentGuide, guideTitle } from "./guide";
+import { renderGuide, renderComponentGuide, guideTitle, guideTopics, bindGuide } from "./guide";
+import { renderHome, bindHome } from "./guide-home";
+import { createGuideSearch } from "./guide-search";
+import "./experience.css";
 import { expandedSample } from "./expanded-samples";
 import {
   layoutPage,
@@ -34,12 +37,12 @@ const base = import.meta.env.BASE_URL;
 const app = document.querySelector<HTMLDivElement>("#app")!;
 let dispose = () => {};
 const state = {
-  locale: (localStorage.getItem("nasaq-locale") || "en") as Locale,
+  locale: (localStorage.getItem("nasaq-locale") === "en" ? "en" : "ar") as Locale,
   mode: localStorage.getItem("nasaq-mode") || "light",
   theme: localStorage.getItem("nasaq-theme") || "nasaq",
   density: "comfortable",
   view: location.hash.slice(1) || "overview",
-  framework: "vanilla",
+  framework: localStorage.getItem("nasaq-framework") || "vanilla",
   search: "",
   category: "all",
   componentSearch: "",
@@ -99,31 +102,43 @@ function nav(view: string, label: string, symbol: string, extra = "") {
   const active = state.view === view || (view === "docs" && state.view.startsWith("docs/")) || (view === "components" && state.view.startsWith("component/"));
   return `<a href="#${view}" class="nav-link ${active ? "active" : ""}" ${active ? 'aria-current="page"' : ""}>${icon(symbol, 19)}<span>${label}</span>${extra}</a>`;
 }
+function categoryName(category: string) {
+  return state.locale === 'en' ? category : ({ Actions: 'الإجراءات', Forms: 'المدخلات والنماذج', Navigation: 'التنقّل', Feedback: 'التغذية الراجعة', Content: 'المحتوى', Platforms: 'أنماط المنصات', Layout: 'التخطيط' } as Record<string,string>)[category] || category;
+}
 function shell() {
   const titles: Record<string, string> = {
-    overview: t("Overview", "نظرة عامة"),
-    components: t("Components", "المكوّنات"),
-    foundations: t("Foundations", "الأساسيات"),
-    discover: t("Service discovery", "اكتشاف الخدمات"),
-    apply: t("Guided application", "طلب خطوة بخطوة"),
-    workspace: t("Request workspace", "مساحة الطلبات"),
-    docs: t("Getting started", "البداية"),
-    brand: t("Brand identity", "الهوية البصرية"),
-    layouts: t("Layout studio", "مختبر التخطيط"),
-    inputs: t("Input laboratory", "مختبر المدخلات"),
+    overview: t('Discover Nasaq', 'اكتشف نسق'), components: t('Components', 'المكوّنات'),
+    foundations: t('Foundations', 'الأساسيات'), discover: t('Service discovery', 'اكتشاف الخدمات'),
+    apply: t('Guided application', 'طلب خطوة بخطوة'), workspace: t('Request workspace', 'مساحة الطلبات'),
+    docs: t('Getting started', 'البداية'), brand: t('Brand identity', 'الهوية البصرية'),
+    layouts: t('Layout studio', 'مختبر التخطيط'), inputs: t('Input laboratory', 'مختبر المدخلات'),
   };
-  return `<a class="skip-link" href="#main">${t("Skip to content", "انتقل إلى المحتوى")}</a>
-  <aside class="sidebar ${state.mobileNav ? "mobile-open" : ""}" aria-label="${t("Main navigation", "التنقل الرئيسي")}">
-    <a href="#overview" class="brand brand-wordmark"><img src="${base}brand/assets/nasaq-lockup-bilingual${state.mode === "dark" ? "-white" : ""}.svg" alt="Nasaq — نسق" width="160" height="64"></a>
-    <div class="sidebar-caption">${t("THE DESIGN SYSTEM", "نظام التصميم")}</div>
-    <nav>${nav("overview", t("Overview", "نظرة عامة"), "grid")}${nav("foundations", t("Foundations", "الأساسيات"), "palette")}${nav("components", t("Components", "المكوّنات"), "layers", `<small>${catalog.length}</small>`)}${nav("layouts", t("Layout studio", "مختبر التخطيط"), "grid")}${nav("inputs", t("All native inputs", "كل المدخلات الأصلية"), "filter")}${nav("brand", t("Brand identity", "الهوية البصرية"), "spark")}
-    <div class="nav-label">${t("EXPLORE THE POSSIBILITIES", "اكتشف الإمكانات")}</div>${nav("discover", t("Discover a service", "اكتشف خدمة"), "search")}${nav("apply", t("Complete an application", "أكمل طلبًا"), "file")}${nav("workspace", t("Manage requests", "إدارة الطلبات"), "briefcase")}
-    <div class="nav-label">${t("BUILD WITH NASAQ", "ابنِ باستخدام نسق")}</div>${nav("docs", t("Getting started", "البداية"), "code")}</nav>
-    <div class="sidebar-bottom"><div class="made-for"><span class="status-dot"></span>${t("Made for what comes next.", "مصمّم لما هو قادم.")}</div><p>${t("Independent by design.\nSaudi at heart.", "مستقل في تصميمه.\nسعودي في روحه.")}</p><span class="version">v0.1 · ${t("Public preview", "معاينة عامة")}</span></div>
-  </aside>
-  <div class="main-shell"><header class="topbar"><div class="breadcrumb-top"><button class="icon-button mobile-menu" data-action="menu" aria-label="${t("Toggle navigation", "تبديل التنقل")}">${icon("menu")}</button><span class="muted">${t("Library", "المكتبة")}</span><span class="muted">/</span><span>${guideTitle(state.view, state.locale) || titles[state.view] || titles.overview}</span></div><div class="topbar-actions"><button class="search-trigger" data-action="search-components" aria-label="${t("Find a component", "ابحث عن مكوّن")}">${icon("search", 17)}<span>${t("Find a component", "ابحث عن مكوّن")}</span><kbd>/</kbd></button><button class="icon-button" data-action="locale" aria-label="${t("ع — Switch to Arabic", "EN — Switch to English")}">${icon("globe", 19)}<span>${t("ع", "EN")}</span></button><button class="icon-button" data-action="mode" aria-label="${t("Toggle color mode", "تبديل المظهر")}">${icon(state.mode === "light" ? "moon" : "sun", 19)}</button><span class="topbar-divider"></span><span class="preview-label">${t("GUIDE & PLAYGROUND", "الدليل ومساحة التجربة")}</span></div></header>
-  <main id="main" tabindex="-1">${content()}</main><footer class="page-footer"><span>نسق · Nasaq</span><span>${t("Thoughtfully connected. Effortlessly yours.", "ترابط مدروس. ومرونة بين يديك.")}</span><span>Vanilla · React · Angular · Vue</span></footer></div><div id="toast" role="status" class="toast" hidden></div>`;
+  const isDocs = state.view === 'docs' || state.view.startsWith('docs/');
+  const isComponent = state.view.startsWith('component/');
+  const activeComponent = catalog.find(c => 'component/'+c[0] === state.view);
+  const mobileOpen = state.mobileNav && matchMedia('(max-width: 1024px)').matches;
+  const docNav = guideTopics.map(([id,en,ar]) => `<a class="sidebar-child ${state.view==='docs/'+id || (state.view==='docs'&&id==='getting-started')?'is-active':''}" href="#docs/${id}" ${state.view==='docs/'+id || (state.view==='docs'&&id==='getting-started')?'aria-current="page"':''}>${t(en,ar)}</a>`).join('');
+  const componentsNav = [...new Set(catalog.map(c=>c[3]))].map(category => `<details class="sidebar-category" ${activeComponent?.[3]===category?'open':''}><summary>${categoryName(category)}<small>${catalog.filter(c=>c[3]===category).length}</small></summary><div>${catalog.filter(c=>c[3]===category).map(c=>`<a class="sidebar-child ${activeComponent?.[0]===c[0]?'is-active':''}" href="#component/${c[0]}" ${activeComponent?.[0]===c[0]?'aria-current="page"':''}>${text([c[1],c[2]])}</a>`).join('')}</div></details>`).join('');
+  return `<a class="skip-link" href="#main">${t('Skip to content','انتقل إلى المحتوى')}</a>
+    <aside id="site-navigation" class="sidebar ${mobileOpen?'mobile-open':''}" ${mobileOpen?'role="dialog" aria-modal="true"':''} aria-label="${t('Main navigation','التنقّل الرئيسي')}">
+      <div class="sidebar-brand-row"><a href="#overview" class="brand brand-wordmark" aria-label="${t('Nasaq home','نسق — الصفحة الرئيسية')}"><img src="${base}brand/assets/nasaq-wordmark${state.mode==='dark'?'-white':''}.svg" alt="نسق" width="100" height="78"></a><span class="sidebar-version" dir="ltr">0.1</span><button type="button" class="icon-button sidebar-close" data-action="menu" aria-label="${t('Close navigation','أغلق التنقّل')}">${icon('close',21)}</button></div>
+      <button type="button" class="sidebar-search" data-action="search-components">${icon('search',17)}<span>${t('Quick search…','بحث سريع…')}</span><kbd dir="ltr" aria-hidden="true">⌘ K</kbd></button>
+      <nav aria-label="${t('Guide and examples','الدليل والأمثلة')}">
+        ${nav('overview',t('Discover Nasaq','اكتشف نسق'),'spark')}
+        <details class="sidebar-group" ${isDocs || state.view==='overview'?'open':''}><summary>${icon('code',18)}<span>${t('Build with Nasaq','ابدأ مع نسق')}</span></summary><div>${docNav}</div></details>
+        ${nav('components',t('Component library','مكتبة المكوّنات'),'layers',`<small>${catalog.length}</small>`)}
+        <details class="sidebar-group component-navigation" ${isComponent?'open':''}><summary>${icon('grid',18)}<span>${t('Browse by category','تصفّح حسب الفئة')}</span></summary><div>${componentsNav}</div></details>
+        <p class="nav-label">${t('CREATE & EXPERIMENT','صمّم وجرّب')}</p>
+        ${nav('layouts',t('Layout studio','مختبر التخطيط'),'grid')}${nav('inputs',t('Input laboratory','مختبر المدخلات'),'filter')}${nav('foundations',t('Design foundations','أسس التصميم'),'palette')}${nav('brand',t('Brand identity','الهوية البصرية'),'spark')}
+        <details class="sidebar-group" ${['discover','apply','workspace'].includes(state.view)?'open':''}><summary>${icon('briefcase',18)}<span>${t('Complete journeys','تجارب متكاملة')}</span></summary><div>${nav('discover',t('Discover a service','اكتشف خدمة'),'search')}${nav('apply',t('Application flow','رحلة تقديم طلب'),'file')}${nav('workspace',t('Request workspace','مساحة الطلبات'),'briefcase')}</div></details>
+      </nav>
+      <div class="sidebar-bottom"><a class="sidebar-github" href="https://github.com/MohamedEmbarak/nasaq" target="_blank" rel="noopener">${icon('code',17)}<span>${t('Source on GitHub','المصدر على GitHub')}</span><span aria-hidden="true">↗</span></a><span class="version">${t('Open source · Apache 2.0','مفتوح المصدر · Apache 2.0')}</span></div>
+    </aside>
+    ${mobileOpen?`<button class="nav-backdrop" type="button" data-action="menu" aria-label="${t('Close navigation','أغلق التنقّل')}" tabindex="-1"></button>`:''}
+    <div class="main-shell" ${mobileOpen?'inert':''}><header class="topbar"><p class="site-attribution">${t("Developed by the Development Team in the National Platforms Sector — National Information Center", "تم التطوير بواسطة فريق التطوير في قطاع المنصات الوطنية - مركز المعلومات الوطني ")}</p><div class="breadcrumb-top"><button type="button" class="icon-button mobile-menu" data-action="menu" aria-controls="site-navigation" aria-expanded="${mobileOpen}" aria-label="${t('Toggle navigation','تبديل التنقّل')}">${icon('menu')}</button><a href="#overview" class="topbar-home">${t('Nasaq','نسق')}</a><span class="breadcrumb-separator" aria-hidden="true">/</span><span>${guideTitle(state.view,state.locale)||titles[state.view]||titles.overview}</span></div><div class="topbar-actions"><button type="button" class="search-trigger" data-action="search-components" aria-label="${t('Search the guide…','ابحث في الدليل…')} ⌘ K" aria-keyshortcuts="Control+k Meta+k">${icon('search',17)}<span>${t('Search the guide…','ابحث في الدليل…')}</span><kbd dir="ltr" aria-hidden="true">⌘ K</kbd></button><button type="button" class="icon-button locale-button" data-action="locale" aria-label="${t('ع — Switch to Arabic','EN — Switch to English')}">${icon('globe',18)}<span>${t('ع','EN')}</span></button><button type="button" class="icon-button" data-action="mode" aria-label="${t('Toggle color mode','تبديل المظهر')}">${icon(state.mode==='light'?'moon':'sun',19)}</button><a class="topbar-github" href="https://github.com/MohamedEmbarak/nasaq" target="_blank" rel="noopener" aria-label="${t('Nasaq on GitHub','نسق على GitHub')}">GitHub <span aria-hidden="true">↗</span></a></div></header>
+    <main id="main" tabindex="-1" data-view="${e(state.view)}">${content()}</main><footer class="page-footer"><span>${t('Made for the way you build.','مصمّم للطريقة التي تبني بها.')}</span><a href="#docs/alignment">${t('DGA-informed. Independently designed.','مستقل في تصميمه. يستلهم كود المنصات.')}</a><span dir="ltr">Apache 2.0 · Nasaq</span></footer></div><div id="toast" role="status" class="toast" hidden></div>`;
 }
+
 function content() {
   if (state.view === "components") return componentPage();
   if (state.view === "foundations") return foundations();
@@ -134,7 +149,7 @@ function content() {
   if (state.view.startsWith("component/")) return renderComponentGuide(state.view.slice("component/".length), state.locale, id => sample(id, "reference"), codeBlock);
   if (state.view === "brand") return brand();
   if (state.view === "layouts") return layoutPage(state.locale);
-  if (state.view === "inputs") return inputPage(state.locale);
+  if (state.view === "inputs") return inputPage(state.locale, state.mode === "dark" ? "dark" : "light");
   return overview();
 }
 function heading(
@@ -146,39 +161,7 @@ function heading(
   return `<div class="page-heading"><div><div class="eyebrow">${kicker}</div><h1>${title}</h1><p>${description}</p></div>${action}</div>`;
 }
 function overview() {
-  return `<section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="little-line"></span>${t("A SYSTEM THAT BRINGS IT TOGETHER", "نظام يجمع التفاصيل")}</div><h1>${t("A clear foundation.<br><em>For what comes next.</em>", "أساس واضح.<br><em>لما هو قادم.</em>")}</h1><p>${t("Beautiful interfaces. Thoughtful interactions. An Arabic-first design system that gives your next platform room to grow.", "واجهات جميلة. وتفاعلات مدروسة. نظام تصميم يبدأ بالعربية ويمنح منصتك القادمة مساحة للنمو.")}</p><div class="hero-actions"><a class="nq-button" href="#components">${t("Explore components", "استكشف المكوّنات")}${icon("arrow", 18)}</a><a class="nq-button" data-variant="ghost" href="#docs">${icon("code", 18)}${t("Start building", "ابدأ البناء")}</a></div><div class="hero-meta"><span>${icon("check", 14)}${t("Arabic & English", "العربية والإنجليزية")}</span><span>${icon("check", 14)}${t("Accessible foundations", "أساسيات ميسّرة")}</span><span>${icon("check", 14)}${t("Yours to shape", "مرن كما تريد")}</span></div></div>
-  <div class="hero-art" aria-label="${t("Nasaq interface composition", "تكوين واجهة نسق")}"><div class="art-grid"></div><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-label">${t("CONSISTENCY, IN EVERY DETAIL", "اتساق في كل تفصيل")}</div><div class="art-card"><div class="art-card-top"><span class="service-icon">${icon("building", 23)}</span>${pill(t("Connected", "مترابط"), "success")}</div><h3>${t("Everything in its place.", "كل تفصيل في مكانه.")}</h3><p>${t("A better experience begins with a considered foundation.", "التجربة الأفضل تبدأ بأساس مدروس.")}</p><div class="art-check">${icon("check", 15)}${t("Details that work together", "تفاصيل تعمل معًا")}</div><div class="art-rule"></div><div class="art-card-bottom"><div class="avatar-stack"><span>ن</span><span>A</span><span>M</span></div><span>${t("Designed for everyone", "مصمّم للجميع")}</span><span class="circle-arrow">${icon("arrow", 16)}</span></div></div><div class="floating-note">${icon("spark", 17)}<span>${t("Different parts. One rhythm.", "تفاصيل مختلفة. إيقاع واحد.")}</span></div><div class="art-swatch"><span></span><span></span><span></span><span></span></div></div></section>
-  <div class="platform-strip"><span>${t("ONE FOUNDATION. YOUR FRAMEWORK.", "أساس واحد. إطارك المفضّل.")}</span><div>${["vanilla", "react", "angular", "vue"].map((f) => `<button class="framework-option ${state.framework === f ? "selected" : ""}" data-framework="${f}" aria-pressed="${state.framework === f}"><span class="framework-mark">${{ vanilla: "JS", react: "⚛", angular: "A", vue: "V" }[f]}</span>${f === "vanilla" ? "Vanilla JS" : f[0]!.toUpperCase() + f.slice(1)}</button>`).join("")}</div><span class="framework-import" dir="ltr">@nasaq/${state.framework}</span></div>
-  <section class="section"><div class="section-heading"><div><div class="eyebrow">${t("SMALL PARTS. BIG POSSIBILITIES.", "تفاصيل صغيرة. إمكانات واسعة.")}</div><h2>${t("A few of the essentials", "بعض الأساسيات")}</h2></div><a href="#components" class="text-link">${t("View all components", "عرض كل المكوّنات")}${icon("arrow", 16)}</a></div><div class="essentials-grid"><article class="demo-tile"><div class="tile-title"><span>${t("Actions, with intention", "إجراءات واضحة")}</span><span>01</span></div><div class="demo-center">${button(t("Continue", "متابعة") + icon("arrow", 16), 'data-action="demo-continue"')}${button(t("Learn more", "اعرف المزيد"), 'data-action="demo-info"', "secondary")}<div class="badge-row">${pill(t("Active", "نشط"), "success")}${pill(t("In progress", "قيد التنفيذ"), "info")}${pill(t("Draft", "مسودة"))}</div></div><div class="tile-foot">${t("Button · Badge", "زر · شارة")}<a href="#components" aria-label="${t("Explore action components", "استكشف مكوّنات الإجراءات")}">${icon("arrow", 18)}</a></div></article><article class="demo-tile"><div class="tile-title"><span>${t("Every detail considered", "كل تفصيل مدروس")}</span><span>02</span></div><div class="demo-form"><label class="nq-label" for="overview-name">${t("Organization name", "اسم المنشأة")}</label><input id="overview-name" class="nq-input" placeholder="${t("Your next great idea", "فكرتك القادمة")}" aria-describedby="overview-hint"><span id="overview-hint" class="nq-hint">${t("Give your next chapter a name.", "امنح فصلك القادم اسمًا.")}</span><label class="choice-line"><input class="nq-switch" type="checkbox" role="switch" checked>${t("Keep me up to date", "أبقني على اطّلاع")}</label></div><div class="tile-foot">${t("Text field · Switch", "حقل نصي · مفتاح تبديل")}<a href="#components" aria-label="${t("Explore form components", "استكشف مكوّنات النماذج")}">${icon("arrow", 18)}</a></div></article><article class="demo-tile"><div class="tile-title"><span>${t("Progress you can follow", "تقدّم يمكنك متابعته")}</span><span>03</span></div><div class="demo-progress"><div class="mini-status"><span class="round-check">${icon("check", 18)}</span><div><strong>${t("Application received", "تم استلام الطلب")}</strong><p>${t("You’re one step closer.", "أنت أقرب بخطوة.")}</p></div></div><div class="progress-caption"><span>${t("Your progress", "تقدّمك")}</span><span>2 / 3</span></div><progress class="nq-progress" value="66" max="100" aria-label="${t("Application progress", "تقدّم الطلب")}"></progress><div class="progress-steps"><span>${t("Details", "التفاصيل")}</span><strong>${t("Review", "المراجعة")}</strong><span>${t("Complete", "الإكمال")}</span></div></div><div class="tile-foot">${t("Progress · Status", "تقدّم · حالة")}<a href="#workspace" aria-label="${t("Explore request tracking", "استكشف متابعة الطلبات")}">${icon("arrow", 18)}</a></div></article></div></section>
-  <section class="section"><div class="section-heading"><div><div class="eyebrow">${t("SEE THE SYSTEM IN ACTION", "شاهد النظام في العمل")}</div><h2>${t("From components to experiences", "من المكوّنات إلى التجارب")}</h2></div><span class="section-note">${t("Real patterns. Ready to adapt.", "أنماط عملية. جاهزة للتخصيص.")}</span></div><div class="pattern-grid">${[
-    [
-      "discover",
-      "search",
-      t(
-        "Help people find their next step",
-        "ساعد الناس على إيجاد خطوتهم القادمة",
-      ),
-      t("Service discovery", "اكتشاف الخدمات"),
-    ],
-    [
-      "apply",
-      "file",
-      t("Make the complex feel simple", "اجعل المعقّد بسيطًا"),
-      t("Guided applications", "طلبات موجّهة"),
-    ],
-    [
-      "workspace",
-      "briefcase",
-      t("A clear view of what matters", "صورة واضحة لما يهم"),
-      t("Operational workspaces", "مساحات العمل"),
-    ],
-  ]
-    .map(
-      ([v, i, title, label], index) =>
-        `<a href="#${v}" class="pattern-card pattern-${index}"><div class="pattern-visual">${index === 0 ? '<div class="mini-search">' + icon("search", 16) + '<span></span></div><div class="mini-cards"><i></i><i></i><i></i></div>' : index === 1 ? '<div class="mini-steps"><i></i><b></b><i></i><b></b><i></i></div><div class="mini-fields"><i></i><i></i><i></i></div>' : '<div class="mini-table"><i></i><i></i><i></i><i></i></div>'}</div><div class="pattern-content"><span class="eyebrow">${label}</span><h3>${title}</h3><span class="pattern-arrow">${icon("arrow", 18)}</span></div></a>`,
-    )
-    .join("")}</div></section>
-  <section class="closing-note"><div class="closing-symbol">${icon("globe", 30)}</div><div><h3>${t("Arabic at heart. Open to possibilities.", "العربية في الأساس. والإمكانات بلا حدود.")}</h3><p>${t("Independent design, informed by Saudi DGA Platforms Code. Built to adapt to the people and platforms you serve.", "تصميم مستقل يستلهم كود المنصات لهيئة الحكومة الرقمية. يتكيّف مع الأشخاص والمنصات التي تخدمها.")}</p></div><a href="#docs" class="text-link">${t("Our approach", "منهجنا")}${icon("arrow", 17)}</a></section>`;
+  return renderHome(state.locale, state.framework, sample);
 }
 
 function sample(id: ComponentId, p = "sample"): string {
@@ -238,7 +221,7 @@ function sample(id: ComponentId, p = "sample"): string {
     case "skeleton":
       return `<div class="nq-stack" aria-label="${t("Loading content", "جارٍ تحميل المحتوى")}" role="status"><div class="nq-skeleton" style="height:18px;width:70%"></div><div class="nq-skeleton" style="height:12px"></div><div class="nq-skeleton" style="height:12px;width:85%"></div></div>`;
     case "avatar":
-      return `<div class="nq-cluster"><span class="nq-avatar" aria-label="${t("Noura", "نورة")}">ن</span><span class="nq-avatar" aria-label="Amal">A</span><span class="nq-avatar" aria-label="Mohammed">M</span></div>`;
+      return `<div class="nq-cluster"><span class="nq-avatar" aria-label="${t("Noura", "نورة")}">ن</span><span class="nq-avatar" aria-label="${t("Amal", "أمل")}">${t("A", "أ")}</span><span class="nq-avatar" aria-label="${t("Mohammed", "محمد")}">${t("M", "م")}</span></div>`;
     case "divider":
       return `<div class="nq-stack"><span>${t("A little breathing room", "مساحة للتنفّس")}</span><hr class="nq-divider"><span class="muted">${t("Between the things that matter.", "بين التفاصيل المهمة.")}</span></div>`;
     case "tooltip":
@@ -250,7 +233,7 @@ function sample(id: ComponentId, p = "sample"): string {
     case "empty":
       return `<div class="nq-empty">${icon("search", 28)}<strong>${t("Nothing here just yet", "لا يوجد شيء هنا بعد")}</strong><p>${t("Try another search or start something new.", "جرّب بحثًا آخر أو ابدأ شيئًا جديدًا.")}</p></div>`;
   }
-  return expandedSample(id, p, state.locale);
+  return expandedSample(id, p, state.locale, state.mode === "dark" ? "dark" : "light");
 }
 function componentPage() {
   const list = catalog.filter(
@@ -260,20 +243,20 @@ function componentPage() {
         normalizeSearch(state.componentSearch),
       ),
   );
-  return `${heading(t("THE BUILDING BLOCKS", "لبنات البناء"), t("Considered in every state.", "مدروسة في كل حالة."), t("Explore, interact, and make it yours. Every component shares one foundation.", "استكشف وجرّب وخصّص. كل مكوّن يرتكز على أساس واحد."))}<div class="catalog-controls"><label class="search-field">${icon("search", 18)}<input id="component-search" type="search" value="${e(state.componentSearch)}" placeholder="${t(`Search ${catalog.length} components…`, `ابحث في ${catalog.length} مكوّنًا…`)}" aria-label="${t("Search components", "البحث في المكوّنات")}"></label><div class="filter-chips" aria-label="${t("Component categories", "فئات المكوّنات")}">${["All", "Actions", "Forms", "Navigation", "Feedback", "Content", "Platforms", "Layout"].map((c) => `<button class="filter-chip ${state.componentCategory === c ? "active" : ""}" data-component-category="${c}" aria-pressed="${state.componentCategory === c}">${state.locale === "en" ? c : { All: "الكل", Actions: "الإجراءات", Forms: "النماذج", Navigation: "التنقل", Feedback: "التغذية الراجعة", Content: "المحتوى", Platforms: "المنصات", Layout: "التخطيط" }[c]}</button>`).join("")}</div></div><p class="result-count" role="status">${list.length} ${t("components", "مكوّنًا")}</p><div class="component-grid">${list.map((c) => `<article class="component-card"><div class="component-card-title"><h2><a href="#component/${c[0]}">${text([c[1], c[2]])}</a></h2><span>${c[3]}</span></div><div class="component-preview">${sample(c[0], `gallery-${c[0]}`)}</div><details class="source-details"><summary>${icon("code", 15)}${t("View markup", "عرض الشفرة")}</summary>${codeBlock(sample(c[0], `example-${c[0]}`).replace(/ data-action="[^"]*"/g, ""))}</details><a class="component-card-docs" href="#component/${c[0]}">${t("Usage, API & lifecycle", "الاستخدام وواجهة البرمجة ودورة الحياة")}${icon("arrow", 15)}</a></article>`).join("")}</div>${list.length ? "" : `<div class="nq-empty"><h2>${t("No components found", "لم نعثر على مكوّنات")}</h2>${button(t("Reset search", "إعادة البحث"), 'data-action="reset-components"', "secondary")}</div>`}`;
+  return `${heading(t("THE BUILDING BLOCKS", "لبنات البناء"), t("Considered in every state.", "مدروسة في كل حالة."), t("Explore, interact, and make it yours. Every component shares one foundation.", "استكشف وجرّب وخصّص. كل مكوّن يرتكز على أساس واحد."))}<div class="catalog-controls"><label class="search-field">${icon("search", 18)}<input id="component-search" type="search" value="${e(state.componentSearch)}" placeholder="${t(`Search ${catalog.length} components…`, `ابحث في ${catalog.length} مكوّنًا…`)}" aria-label="${t("Search components", "البحث في المكوّنات")}"></label><div class="filter-chips" aria-label="${t("Component categories", "فئات المكوّنات")}">${["All", "Actions", "Forms", "Navigation", "Feedback", "Content", "Platforms", "Layout"].map((c) => `<button class="filter-chip ${state.componentCategory === c ? "active" : ""}" data-component-category="${c}" aria-pressed="${state.componentCategory === c}">${state.locale === "en" ? c : { All: "الكل", Actions: "الإجراءات", Forms: "النماذج", Navigation: "التنقل", Feedback: "التغذية الراجعة", Content: "المحتوى", Platforms: "المنصات", Layout: "التخطيط" }[c]}</button>`).join("")}</div></div><p class="result-count" role="status">${list.length} ${t("components", "مكوّنًا")}</p><div class="component-grid">${list.map((c) => `<article class="component-card"><div class="component-card-title"><h2><a href="#component/${c[0]}">${text([c[1], c[2]])}</a></h2><span>${categoryName(c[3])}</span></div><div class="component-preview">${sample(c[0], `gallery-${c[0]}`)}</div><details class="source-details"><summary>${icon("code", 15)}${t("View markup", "عرض الشفرة")}</summary>${codeBlock(sample(c[0], `example-${c[0]}`).replace(/ data-action="[^"]*"/g, ""))}</details><a class="component-card-docs" href="#component/${c[0]}">${t("Usage, API & lifecycle", "الاستخدام وواجهة البرمجة ودورة الحياة")}${icon("arrow", 15)}</a></article>`).join("")}</div>${list.length ? "" : `<div class="nq-empty"><h2>${t("No components found", "لم نعثر على مكوّنات")}</h2>${button(t("Reset search", "إعادة البحث"), 'data-action="reset-components"', "secondary")}</div>`}`;
 }
 function foundations() {
   const palette = [
-    ["primary", "Deep teal", "#006A64"],
-    ["primary-subtle", "Soft mint", "#C8E7DD"],
-    ["canvas", "Warm ivory", "#F7F5EE"],
-    ["text", "Ink", "#142D30"],
-    ["surface", "Surface", "Surface"],
-    ["border", "Border", "Border"],
-    ["success", "Success", "Success"],
-    ["warning", "Warning", "Warning"],
+    ["primary", t("Deep teal", "بترولي عميق"), "#006A64"],
+    ["primary-subtle", t("Soft mint", "نعناعي هادئ"), "#C8E7DD"],
+    ["canvas", t("Warm ivory", "عاجي دافئ"), "#F7F5EE"],
+    ["text", t("Ink", "حبري"), "#142D30"],
+    ["surface", t("Surface", "سطح"), "Surface"],
+    ["border", t("Border", "حدود"), "Border"],
+    ["success", t("Success", "نجاح"), "Success"],
+    ["warning", t("Warning", "تحذير"), "Warning"],
   ];
-  return `${heading(t("THE SHARED LANGUAGE", "اللغة المشتركة"), t("Flexible by nature.", "المرونة في الأساس."), t("Change the rhythm without losing the system. Themes, type, spacing, and density work together.", "غيّر الإيقاع مع الحفاظ على النظام. الألوان والخطوط والمسافات والكثافة تعمل معًا."))}<div class="theme-toolbar"><label class="nq-field"><span class="nq-label">${t("Theme", "السمة")}</span><select id="theme-select" class="nq-select"><option value="nasaq" ${state.theme === "nasaq" ? "selected" : ""}>Nasaq · Woven Rhythm</option><option value="dga" ${state.theme === "dga" ? "selected" : ""}>${t("DGA reference", "مرجع DGA")}</option><option value="custom" ${state.theme === "custom" ? "selected" : ""}>${t("Custom · Indigo", "مخصّص · نيلي")}</option></select></label><label class="nq-field"><span class="nq-label">${t("Density", "الكثافة")}</span><select id="density-select" class="nq-select"><option value="comfortable" ${state.density === "comfortable" ? "selected" : ""}>${t("Comfortable", "مريحة")}</option><option value="compact" ${state.density === "compact" ? "selected" : ""}>${t("Compact", "مكثّفة")}</option></select></label><label class="nq-field"><span class="nq-label">${t("Direction", "الاتجاه")}</span><select id="direction-select" class="nq-select"><option value="ltr" ${document.documentElement.dir === "ltr" ? "selected" : ""}>Left to right</option><option value="rtl" ${document.documentElement.dir === "rtl" ? "selected" : ""}>Right to left</option></select></label>${button(icon("download", 17) + t("Export theme CSS", "تصدير CSS للسمة"), 'data-action="export-theme"', "secondary")}</div><section class="section"><h2>${t("Color with a purpose", "ألوان ذات معنى")}</h2><div class="swatch-grid">${palette.map(([key, label]) => `<div class="swatch-card"><div class="swatch" style="background:var(--nq-color-${key})"></div><strong>${label}</strong><code>--nq-color-${key}</code></div>`).join("")}</div></section><section class="foundation-split"><div class="type-specimen"><div class="eyebrow">${t("TYPOGRAPHY", "الخطوط")}</div><p class="type-display" lang="ar" dir="rtl">وضوحٌ يربط التفاصيل</p><p class="type-display latin">Clarity, woven together.</p><p>${t("Readable rhythm in both languages. Type scales serve the content, from a public service page to a working dashboard.", "إيقاع مقروء في اللغتين. مقاييس خط تخدم المحتوى، من صفحة خدمة عامة إلى لوحة عمل.")}</p></div><div class="foundation-preview"><div class="eyebrow">${t("SAME COMPONENTS, YOUR EXPRESSION", "المكوّنات نفسها، بتعبيرك")}</div>${sample("text-field", "theme")}${sample("button", "theme")}${sample("alert", "theme")}</div></section><section class="section"><h2>${t("Space to make sense", "مساحة للوضوح")}</h2><div class="spacing-scale">${[1, 2, 3, 4, 5, 6, 8, 10, 12].map((n) => `<div><span style="width:var(--nq-space-${n})"></span><code>${n}</code></div>`).join("")}</div></section>${codeBlock(":root {\n  --nq-color-primary: #006a64;\n  --nq-color-primary-hover: #005750;\n  --nq-color-primary-subtle: #c8e7dd;\n  --nq-radius-md: 0.5rem;\n}\n/* Components keep the same behavior. */")}`;
+  return `${heading(t("THE SHARED LANGUAGE", "اللغة المشتركة"), t("Flexible by nature.", "المرونة في الأساس."), t("Change the rhythm without losing the system. Themes, type, spacing, and density work together.", "غيّر الإيقاع مع الحفاظ على النظام. الألوان والخطوط والمسافات والكثافة تعمل معًا."))}<div class="theme-toolbar"><label class="nq-field"><span class="nq-label">${t("Theme", "السمة")}</span><select id="theme-select" class="nq-select"><option value="nasaq" ${state.theme === "nasaq" ? "selected" : ""}>${t("Nasaq · Woven Rhythm", "نسق · إيقاع منسوج")}</option><option value="dga" ${state.theme === "dga" ? "selected" : ""}>${t("DGA reference", "مرجع DGA")}</option><option value="custom" ${state.theme === "custom" ? "selected" : ""}>${t("Custom · Indigo", "مخصّص · نيلي")}</option></select></label><label class="nq-field"><span class="nq-label">${t("Density", "الكثافة")}</span><select id="density-select" class="nq-select"><option value="comfortable" ${state.density === "comfortable" ? "selected" : ""}>${t("Comfortable", "مريحة")}</option><option value="compact" ${state.density === "compact" ? "selected" : ""}>${t("Compact", "مكثّفة")}</option></select></label><label class="nq-field"><span class="nq-label">${t("Direction", "الاتجاه")}</span><select id="direction-select" class="nq-select"><option value="ltr" ${document.documentElement.dir === "ltr" ? "selected" : ""}>${t("Left to right", "من اليسار إلى اليمين")}</option><option value="rtl" ${document.documentElement.dir === "rtl" ? "selected" : ""}>${t("Right to left", "من اليمين إلى اليسار")}</option></select></label>${button(icon("download", 17) + t("Export theme CSS", "تصدير CSS للسمة"), 'data-action="export-theme"', "secondary")}</div><section class="section"><h2>${t("Color with a purpose", "ألوان ذات معنى")}</h2><div class="swatch-grid">${palette.map(([key, label]) => `<div class="swatch-card"><div class="swatch" style="background:var(--nq-color-${key})"></div><strong>${label}</strong><code>--nq-color-${key}</code></div>`).join("")}</div></section><section class="foundation-split"><div class="type-specimen"><div class="eyebrow">${t("TYPOGRAPHY", "الخطوط")}</div><p class="type-display" lang="ar" dir="rtl">وضوحٌ يربط التفاصيل</p><p class="type-display latin" lang="en" dir="ltr">Clarity, woven together.</p><p>${t("Readable rhythm in both languages. Type scales serve the content, from a public service page to a working dashboard.", "إيقاع مقروء في اللغتين. مقاييس خط تخدم المحتوى، من صفحة خدمة عامة إلى لوحة عمل.")}</p></div><div class="foundation-preview"><div class="eyebrow">${t("SAME COMPONENTS, YOUR EXPRESSION", "المكوّنات نفسها، بتعبيرك")}</div>${sample("text-field", "theme")}${sample("button", "theme")}${sample("alert", "theme")}</div></section><section class="section"><h2>${t("Space to make sense", "مساحة للوضوح")}</h2><div class="spacing-scale">${[1, 2, 3, 4, 5, 6, 8, 10, 12].map((n) => `<div><span style="width:var(--nq-space-${n})"></span><code>${n}</code></div>`).join("")}</div></section>${codeBlock(":root {\n  --nq-color-primary: #006a64;\n  --nq-color-primary-hover: #005750;\n  --nq-color-primary-subtle: #c8e7dd;\n  --nq-radius-md: 0.5rem;\n}\n/* Components keep the same behavior. */")}`;
 }
 function serviceCard(s: Service) {
   return `<article class="service-card"><div class="service-card-top"><span class="service-icon">${icon(s.icon, 23)}</span>${"popular" in s ? pill(t("Popular", "شائعة"), "success") : ""}</div><h2>${text(s.title)}</h2><p>${text(s.description)}</p><div class="service-meta"><span>${icon("clock", 15)}${s.days} ${t("working days", "أيام عمل")}</span><span>${s.fee ? t("SAR ", "ر.س ") + s.fee : t("Free", "مجانية")}</span></div><button class="service-link" data-service="${s.id}">${t("View service", "عرض الخدمة")}${icon("arrow", 18)}</button></article>`;
@@ -367,7 +350,7 @@ function workspace() {
     )}</div><section class="workspace-panel"><div class="workspace-toolbar"><label class="search-field">${icon("search", 18)}<input id="request-search" type="search" value="${e(state.requestSearch)}" placeholder="${t("Search requests…", "ابحث في الطلبات…")}" aria-label="${t("Search requests", "ابحث في الطلبات")}"></label><label class="status-filter"><span class="nq-sr-only">${t("Filter by status", "تصفية حسب الحالة")}</span><select class="nq-select" id="request-status"><option value="all">${t("All statuses", "كل الحالات")}</option>${["review", "action", "completed", "draft"].map((s) => `<option value="${s}" ${state.requestStatus === s ? "selected" : ""}>${statusLabel(s)}</option>`).join("")}</select></label></div>${state.selected.size ? `<div class="bulk-bar"><span>${state.selected.size} ${t("selected", "محدد")}</span>${button(icon("download", 15) + t("Export selected", "تصدير المحدد"), 'data-action="export-selected" data-size="sm"', "secondary")}${button(t("Clear selection", "إلغاء التحديد"), 'data-action="clear-selection" data-size="sm"', "ghost")}</div>` : ""}<div class="nq-table-wrap"><table class="nq-table requests-table"><caption class="nq-sr-only">${t("Your sample requests", "طلباتك التوضيحية")}</caption><thead><tr><th><input class="nq-checkbox" id="select-all" type="checkbox" ${rows.length && rows.every((r) => state.selected.has(r.id)) ? "checked" : ""} aria-label="${t("Select visible requests", "تحديد الطلبات الظاهرة")}"></th><th>${t("Request", "الطلب")}</th><th>${t("Reference", "المرجع")}</th><th>${t("Submitted", "تاريخ التقديم")}</th><th>${t("Status", "الحالة")}</th><th><span class="nq-sr-only">${t("Details", "التفاصيل")}</span></th></tr></thead><tbody>${rows.map((r) => `<tr><td><input class="nq-checkbox" type="checkbox" data-select="${r.id}" ${state.selected.has(r.id) ? "checked" : ""} aria-label="${e(t("Select ", "تحديد ") + text(r.name))}"></td><td><strong>${text(r.name)}</strong></td><td class="reference" dir="ltr">${r.id}</td><td>${formatDate(r.date + "T12:00:00Z", { locale: state.locale === "ar" ? "ar-SA" : "en-GB", month: "short", day: "numeric" })}</td><td>${pill(statusLabel(r.status), statusTone(r.status))}</td><td><button class="icon-button" data-request="${r.id}" aria-label="${e(t("View ", "عرض ") + text(r.name))}">${icon("arrow", 18)}</button></td></tr>`).join("")}</tbody></table></div>${!rows.length ? `<div class="nq-empty">${t("No matching requests. Try another search.", "لا توجد طلبات مطابقة. جرّب بحثًا آخر.")}</div>` : ""}<div class="table-footer"><span role="status">${rows.length} ${t("requests", "طلبات")}</span><span>${t("Sample data · October 2026", "بيانات توضيحية · أكتوبر ٢٠٢٦")}</span></div></section><dialog id="request-dialog" class="nq-dialog" data-nq="dialog" aria-labelledby="request-title"><div id="request-content"></div></dialog>`;
 }
 function brand() {
-  return `${heading(t("THE NASAQ IDENTITY", "هوية نسق"), t("Clarity, woven together.", "وضوحٌ يربط التفاصيل."), t("One word. Its own character. Arabic lettering is the complete Nasaq identity.", "كلمة واحدة. وشخصية خاصة. الحروف العربية هي هوية نسق كاملة."))}<section class="brand-showcase"><img src="${base}brand/assets/nasaq-lockup-bilingual.svg" alt="Nasaq — نسق"><p>${t("Different parts. One rhythm.", "تفاصيل مختلفة. إيقاع واحد.")}</p></section><div class="brand-principles"><article><span>01</span><h2>${t("Arabic, by name", "عربيٌ باسمه")}</h2><p>${t("The Arabic name نسق stands alone in outlined Aref Ruqaa lettering. No separate icon or Latin wordmark.", "اسم نسق وحده بحروف عارف رقعة المحوّلة إلى مسارات متجهة. دون رمز منفصل أو كتابة لاتينية.")}</p></article><article><span>02</span><h2>${t("Considered", "مدروس")}</h2><p>${t("Calm colors, clear typography, and purposeful space.", "ألوان هادئة، وخطوط واضحة، ومساحات هادفة.")}</p></article><article><span>03</span><h2>${t("Adaptable", "مرن")}</h2><p>${t("A consistent foundation with room for individual expression.", "أساس متّسق يترك مساحة للتعبير الخاص.")}</p></article></div><a class="nq-button" href="${base}brand/index.html" target="_blank" rel="noopener">${t("Open the complete identity guide", "افتح دليل الهوية الكامل")}${icon("arrow", 17)}</a>`;
+  return `${heading(t("THE NASAQ IDENTITY", "هوية نسق"), t("Clarity, woven together.", "وضوحٌ يربط التفاصيل."), t("One word. Its own character. Arabic lettering is the complete Nasaq identity.", "كلمة واحدة. وشخصية خاصة. الحروف العربية هي هوية نسق كاملة."))}<section class="brand-showcase"><img src="${base}brand/assets/nasaq-lockup-bilingual.svg" alt="Nasaq — نسق"><p>${t("Different parts. One rhythm.", "تفاصيل مختلفة. إيقاع واحد.")}</p></section><div class="brand-principles"><article><span>01</span><h2>${t("Arabic, by name", "عربيٌ باسمه")}</h2><p>${t("The Arabic name نسق stands alone in outlined Aref Ruqaa lettering. No separate icon or Latin wordmark.", "اسم نسق وحده بحروف عارف رقعة المحوّلة إلى مسارات متجهة. دون رمز منفصل أو كتابة لاتينية.")}</p></article><article><span>02</span><h2>${t("Considered", "مدروس")}</h2><p>${t("Calm colors, clear typography, and purposeful space.", "ألوان هادئة، وخطوط واضحة، ومساحات هادفة.")}</p></article><article><span>03</span><h2>${t("Adaptable", "مرن")}</h2><p>${t("A consistent foundation with room for individual expression.", "أساس متّسق يترك مساحة للتعبير الخاص.")}</p></article></div><a class="nq-button" href="${base}brand/${state.locale === "ar" ? "index.html" : "index-en.html"}" target="_blank" rel="noopener">${t("Open the complete identity guide", "افتح دليل الهوية الكامل")}${icon("arrow", 17)}</a>`;
 }
 
 function applySettings() {
@@ -405,12 +388,18 @@ function render() {
   const selection = active?.selectionStart;
   dispose();
   applySettings();
-  document.title = `${guideTitle(state.view, state.locale) || (state.view === "components" ? "Components" : "Guide & playground")} · Nasaq — نسق`;
   app.innerHTML = shell();
+  const pageTitle = guideTitle(state.view, state.locale) || app.querySelector('main h1')?.textContent?.trim() || t('Guide & playground', 'الدليل ومساحة التجربة');
+  document.title = `${pageTitle} · ${t('Nasaq — نسق', 'نسق — Nasaq')}`;
+  document.body.classList.toggle("navigation-open", state.mobileNav);
+  const unguide = bindGuide(app);
+  const unhome = bindHome(app, state.locale);
   const unenhance = enhance(app);
   const unlayout = bindLayoutStudio(app, state.locale);
   const uninput = bindInputLab(app);
   dispose = () => {
+    unguide();
+    unhome();
     uninput();
     unlayout();
     unenhance();
@@ -471,6 +460,7 @@ app.addEventListener("click", async (event) => {
   }
   if (el.dataset.framework) {
     state.framework = el.dataset.framework;
+    localStorage.setItem("nasaq-framework", state.framework);
     render();
     return;
   }
@@ -503,7 +493,7 @@ app.addEventListener("click", async (event) => {
     const service = services.find((s) => s.id === el.dataset.service)!;
     state.service = service;
     document.getElementById("service-dialog-content")!.innerHTML =
-      `<div class="nq-dialog-header"><span class="service-icon">${icon(service.icon, 24)}</span>${button(icon("close"), `data-nq-dialog-close aria-label="${t("Close", "إغلاق")}"`, "ghost")}</div><div class="nq-dialog-body"><h2 id="service-dialog-title">${text(service.title)}</h2><p>${text(service.description)}</p><dl class="review-list"><div><dt>${t("Fee", "الرسوم")}</dt><dd>${service.fee ? service.fee + " SAR" : t("Free", "مجانية")}</dd></div><div><dt>${t("Time", "المدة")}</dt><dd>${service.days} ${t("working days", "أيام عمل")}</dd></div></dl><h3>${t("Before you begin", "قبل البدء")}</h3><ul><li>${t("Prepare your organization details.", "جهّز معلومات منشأتك.")}</li><li>${t("Have a contact email ready.", "جهّز بريدًا إلكترونيًا للتواصل.")}</li><li>${t("Review supporting document requirements.", "راجع متطلبات المستندات الداعمة.")}</li></ul></div><div class="nq-dialog-footer">${button(t("Start example application", "بدء طلب تجريبي"), 'data-action="start-service"')}</div>`;
+      `<div class="nq-dialog-header"><span class="service-icon">${icon(service.icon, 24)}</span>${button(icon("close"), `data-nq-dialog-close aria-label="${t("Close", "إغلاق")}"`, "ghost")}</div><div class="nq-dialog-body"><h2 id="service-dialog-title">${text(service.title)}</h2><p>${text(service.description)}</p><dl class="review-list"><div><dt>${t("Fee", "الرسوم")}</dt><dd>${service.fee ? formatNumber(service.fee, { locale: state.locale === "ar" ? "ar-SA" : "en", style: "currency", currency: "SAR", maximumFractionDigits: 0 }) : t("Free", "مجانية")}</dd></div><div><dt>${t("Time", "المدة")}</dt><dd>${service.days} ${t("working days", "أيام عمل")}</dd></div></dl><h3>${t("Before you begin", "قبل البدء")}</h3><ul><li>${t("Prepare your organization details.", "جهّز معلومات منشأتك.")}</li><li>${t("Have a contact email ready.", "جهّز بريدًا إلكترونيًا للتواصل.")}</li><li>${t("Review supporting document requirements.", "راجع متطلبات المستندات الداعمة.")}</li></ul></div><div class="nq-dialog-footer">${button(t("Start example application", "بدء طلب تجريبي"), 'data-action="start-service"')}</div>`;
     (
       document.getElementById("service-dialog") as HTMLDialogElement
     ).showModal();
@@ -537,13 +527,10 @@ app.addEventListener("click", async (event) => {
     case "menu":
       state.mobileNav = !state.mobileNav;
       render();
+      app.querySelector<HTMLElement>(state.mobileNav ? '.sidebar-close' : '.mobile-menu')?.focus();
       break;
     case "search-components":
-      location.hash = "components";
-      setTimeout(
-        () => document.getElementById("component-search")?.focus(),
-        30,
-      );
+      guideSearch.open();
       break;
     case "demo-continue":
       toast(
@@ -779,17 +766,20 @@ window.addEventListener("hashchange", () => {
   window.scrollTo({ top: 0 });
   document.getElementById("main")?.focus({ preventScroll: true });
 });
-document.addEventListener("keydown", (event) => {
-  if (
-    event.key === "/" &&
-    !["INPUT", "TEXTAREA", "SELECT"].includes(
-      (event.target as HTMLElement).tagName,
-    )
-  ) {
-    event.preventDefault();
-    location.hash = "components";
-    setTimeout(() => document.getElementById("component-search")?.focus(), 30);
+document.addEventListener('keydown', event => {
+  if (!state.mobileNav || document.querySelector('dialog[open]')) return;
+  if (event.key === 'Escape') {
+    state.mobileNav = false; render(); app.querySelector<HTMLElement>('.mobile-menu')?.focus();
+  }
+  if (event.key === 'Tab') {
+    const links = [...app.querySelectorAll<HTMLElement>('.sidebar a, .sidebar button, .sidebar summary')].filter(el => el.getClientRects().length);
+    const first = links[0], last = links.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   }
 });
+matchMedia('(max-width: 1024px)').addEventListener('change', () => { if(state.mobileNav) { state.mobileNav=false; render(); } });
+const guideSearch = createGuideSearch({ getLocale: () => state.locale });
+if (import.meta.hot) import.meta.hot.dispose(() => { dispose(); guideSearch.destroy(); });
 document.documentElement.dir = state.locale === "ar" ? "rtl" : "ltr";
 render();

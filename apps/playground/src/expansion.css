@@ -12,6 +12,7 @@
   display: block;
   inline-size: 64px;
   block-size: 64px;
+  object-fit: contain;
 }
 .layout-studio {
   display: grid;
