@@ -24,7 +24,7 @@ These exact versions were exercised. Declared peer ranges are broader than a sin
 | `pnpm build` | Passed | Seven packages and four Vite application builds: vanilla playground, React, Vue, and Angular examples |
 | Playground TypeScript check | Passed | Run inside `pnpm build`; also available through `pnpm typecheck:playground` |
 | `pnpm test` | Passed | 8 token-contrast checks and 139 Vitest tests across 20 files, including calendar reference conversion and focused React/Vue hydration cases |
-| `pnpm test:browser` | Passed: 43 tests | 17 original, 10 expansion, 3 component-reference, 5 guide-experience, 5 editor and 3 RTL-icon tests: vanilla journeys, selected component behavior, calendar switching, input/layout labs, responsive layout, wordmark-loader reduced motion, and scoped axe scans in Chromium |
+| `pnpm test:browser` | Verified: 57 tests | 17 original, 10 expansion, 3 component-reference, 5 guide-experience, 5 editor, 3 RTL-icon, 2 hero-control and 12 mobile-navigation tests: vanilla journeys, selected component behavior, calendar switching, input/layout labs, responsive layout, wordmark-loader reduced motion, and scoped axe scans in Chromium |
 | `pnpm check:packages` | Passed | Seven local tarballs installed in an isolated consumer; ESM imports, canonical calendar conversion, React/Vue Button and DatePicker/Grid SSR, Angular APF import, split CSS and bundled wordmark/GIF asset exports, TypeScript consumers, calendar-data license, and two minimal-import bundle budgets |
 | React example browser suite | Passed: 2 tests | Conditional service application, modal review/focus, local request state, independent preferences, narrow Arabic layout, and selected axe scans |
 | Angular example browser script | Passed | Native form/Angular forms integration, Arabic combobox, conditional application, modal/Escape/focus, local request state, RTL, theme change, and mobile layout |
@@ -32,7 +32,7 @@ These exact versions were exercised. Declared peer ranges are broader than a sin
 | Framework calendar browser script | Passed for React, Vue, and Angular | Calendar switching, canonical labels, keyboard selection, reopening, invalid-range submission, responsive RTL/dark layout, and scoped axe scans |
 | Browser-test TypeScript check | Passed | Root browser test source type checking |
 
-The refreshed guide's complete root browser suite passed all **43 tests**. The
+The refreshed guide's **57 root browser cases** have been verified. The
 [component-reference tests](../tests/browser/guide.spec.ts) cover setup navigation,
 all 77 references, reset/remount and narrow RTL accessibility. Five
 [guide-experience tests](../tests/browser/guide-experience.spec.ts) cover Arabic
@@ -41,7 +41,9 @@ keyboard search and mobile navigation focus. Five
 [editor tests](../tests/browser/component-ide.spec.ts) cover HTML/CSS/JavaScript
 editing, automatic/manual updates, error recovery, reset, real enhancement,
 iframe isolation, CSP blocking, Arabic editor search, keyboard navigation,
-mobile layout, draft preservation through shell redraws and custom themes. Three [directional-icon tests](../tests/browser/rtl-icons.spec.ts) cover forward/back arrows, nested RTL/LTR regions and working carousel navigation while non-directional symbols remain unchanged.
+mobile layout, draft preservation through shell redraws and custom themes. Three [directional-icon tests](../tests/browser/rtl-icons.spec.ts) cover forward/back arrows, nested RTL/LTR regions and working carousel navigation while non-directional symbols remain unchanged. Two [hero-control tests](../tests/browser/hero-controls.spec.ts) verify touch/keyboard changes, switch-thumb containment in both directions and modes, and preservation of unsaved input when opening the menu. Twelve [mobile-navigation cases](../tests/browser/mobile-navigation.spec.ts) verify full viewport bounds, real pointer targets, scrolling, focus, same-route close and navigation at 390px, 820px and 900px in both languages and themes.
+
+The latest 57-case check passed 55 cases in the full run and the remaining two editor cases on a focused rerun after the concurrent local build finished. Finish package builds before browser testing to avoid Vite reloads during an active scenario.
 
 The guide production build passed with the `/nasaq/` GitHub Pages base path.
 All 77 Arabic component examples initialized inside the production editor's
@@ -49,7 +51,7 @@ sandbox without runtime errors or failed resource responses. Scoped Chromium
 axe scans passed in light/dark and Arabic/English views; these automated checks
 do not replace manual screen-reader testing. The Arabic content audit covered
 77 component pages, 12 articles and nine guide/example routes. Both standalone
-brand guides were checked at desktop and mobile widths. Current screenshots
+brand guides were checked at desktop and mobile widths. Additional narrow (320×568) and landscape (844×390) drawer checks and production touch checks passed. Current screenshots
 are under [previews](previews/).
 
 All seven packages were rebuilt for the refreshed guide, and the playground

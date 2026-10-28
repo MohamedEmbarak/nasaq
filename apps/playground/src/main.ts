@@ -35,6 +35,7 @@ import {
 
 const base = import.meta.env.BASE_URL;
 const app = document.querySelector<HTMLDivElement>("#app")!;
+const mobileViewport = matchMedia('(max-width: 1024px)');
 let dispose = () => {};
 const state = {
   locale: (localStorage.getItem("nasaq-locale") === "en" ? "en" : "ar") as Locale,
@@ -116,10 +117,10 @@ function shell() {
   const isDocs = state.view === 'docs' || state.view.startsWith('docs/');
   const isComponent = state.view.startsWith('component/');
   const activeComponent = catalog.find(c => 'component/'+c[0] === state.view);
-  const mobileOpen = state.mobileNav && matchMedia('(max-width: 1024px)').matches;
+  const mobileOpen = state.mobileNav && mobileViewport.matches;
   const docNav = guideTopics.map(([id,en,ar]) => `<a class="sidebar-child ${state.view==='docs/'+id || (state.view==='docs'&&id==='getting-started')?'is-active':''}" href="#docs/${id}" ${state.view==='docs/'+id || (state.view==='docs'&&id==='getting-started')?'aria-current="page"':''}>${t(en,ar)}</a>`).join('');
   const componentsNav = [...new Set(catalog.map(c=>c[3]))].map(category => `<details class="sidebar-category" ${activeComponent?.[3]===category?'open':''}><summary>${categoryName(category)}<small>${catalog.filter(c=>c[3]===category).length}</small></summary><div>${catalog.filter(c=>c[3]===category).map(c=>`<a class="sidebar-child ${activeComponent?.[0]===c[0]?'is-active':''}" href="#component/${c[0]}" ${activeComponent?.[0]===c[0]?'aria-current="page"':''}>${text([c[1],c[2]])}</a>`).join('')}</div></details>`).join('');
-  return `<a class="skip-link" href="#main">${t('Skip to content','انتقل إلى المحتوى')}</a>
+  return `<a class="skip-link" href="#main" ${mobileOpen?'inert':''}>${t('Skip to content','انتقل إلى المحتوى')}</a>
     <aside id="site-navigation" class="sidebar ${mobileOpen?'mobile-open':''}" ${mobileOpen?'role="dialog" aria-modal="true"':''} aria-label="${t('Main navigation','التنقّل الرئيسي')}">
       <div class="sidebar-brand-row"><a href="#overview" class="brand brand-wordmark" aria-label="${t('Nasaq home','نسق — الصفحة الرئيسية')}"><img src="${base}brand/assets/nasaq-wordmark${state.mode==='dark'?'-white':''}.svg" alt="نسق" width="100" height="78"></a><span class="sidebar-version" dir="ltr">0.1</span><button type="button" class="icon-button sidebar-close" data-action="menu" aria-label="${t('Close navigation','أغلق التنقّل')}">${icon('close',21)}</button></div>
       <button type="button" class="sidebar-search" data-action="search-components">${icon('search',17)}<span>${t('Quick search…','بحث سريع…')}</span><kbd dir="ltr" aria-hidden="true">⌘ K</kbd></button>
@@ -392,6 +393,7 @@ function render() {
   const pageTitle = guideTitle(state.view, state.locale) || app.querySelector('main h1')?.textContent?.trim() || t('Guide & playground', 'الدليل ومساحة التجربة');
   document.title = `${pageTitle} · ${t('Nasaq — نسق', 'نسق — Nasaq')}`;
   document.body.classList.toggle("navigation-open", state.mobileNav);
+  document.documentElement.classList.toggle("navigation-open", state.mobileNav);
   const unguide = bindGuide(app);
   const unhome = bindHome(app, state.locale);
   const unenhance = enhance(app);
@@ -410,6 +412,51 @@ function render() {
     try {
       if (selection != null) next?.setSelectionRange(selection, selection);
     } catch {}
+  }
+}
+// Toggle the shell in place so opening navigation preserves live component state.
+function setMobileNavigation(open: boolean, focus: 'toggle' | 'main' | 'none' = 'toggle') {
+  state.mobileNav = open && mobileViewport.matches;
+  const sidebar = app.querySelector<HTMLElement>('#site-navigation');
+  if (!sidebar) return;
+  sidebar.classList.toggle('mobile-open', state.mobileNav);
+  if (state.mobileNav) {
+    sidebar.setAttribute('role', 'dialog');
+    sidebar.setAttribute('aria-modal', 'true');
+  } else {
+    sidebar.removeAttribute('role');
+    sidebar.removeAttribute('aria-modal');
+  }
+  app.querySelectorAll<HTMLElement>('.main-shell,.skip-link').forEach(node => node.inert = state.mobileNav);
+  app.querySelector('.mobile-menu')?.setAttribute('aria-expanded', String(state.mobileNav));
+  document.body.classList.toggle('navigation-open', state.mobileNav);
+  document.documentElement.classList.toggle('navigation-open', state.mobileNav);
+  let backdrop = app.querySelector<HTMLButtonElement>('.nav-backdrop');
+  if (state.mobileNav && !backdrop) {
+    backdrop = document.createElement('button');
+    backdrop.className = 'nav-backdrop';
+    backdrop.type = 'button';
+    backdrop.dataset.action = 'menu';
+    backdrop.setAttribute('aria-label', t('Close navigation', 'أغلق التنقّل'));
+    backdrop.tabIndex = -1;
+    sidebar.after(backdrop);
+  } else if (!state.mobileNav) backdrop?.remove();
+  if (state.mobileNav) {
+    sidebar.scrollTop = 0;
+    // Inherited visibility can settle after inert focus cleanup; focus only when ready.
+    const focusClose = () => {
+      if (!state.mobileNav || !sidebar.isConnected) return;
+      const close = sidebar.querySelector<HTMLElement>('.sidebar-close');
+      if (!close) return;
+      if (getComputedStyle(close).visibility !== 'visible') {
+        requestAnimationFrame(focusClose);
+        return;
+      }
+      close.focus({ preventScroll: true });
+    };
+    requestAnimationFrame(focusClose);
+  } else if (focus !== 'none') {
+    app.querySelector<HTMLElement>(focus === 'main' ? '#main' : '.mobile-menu')?.focus({ preventScroll: true });
   }
 }
 let toastTimer: ReturnType<typeof setTimeout>;
@@ -446,6 +493,15 @@ function captureDraft() {
 app.addEventListener("click", async (event) => {
   const el = (event.target as Element).closest<HTMLElement>("button,a");
   if (!el) return;
+  if (state.mobileNav && el.matches('#site-navigation a[href^="#"]') &&
+      !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+    const sameRoute = el.getAttribute('href') === location.hash;
+    setMobileNavigation(false, sameRoute ? 'main' : 'none');
+    if (sameRoute) {
+      event.preventDefault();
+      return;
+    }
+  }
   if (el.classList.contains("skip-link")) {
     event.preventDefault();
     document.getElementById("main")?.focus();
@@ -525,9 +581,7 @@ app.addEventListener("click", async (event) => {
       render();
       break;
     case "menu":
-      state.mobileNav = !state.mobileNav;
-      render();
-      app.querySelector<HTMLElement>(state.mobileNav ? '.sidebar-close' : '.mobile-menu')?.focus();
+      setMobileNavigation(!state.mobileNav);
       break;
     case "search-components":
       guideSearch.open();
@@ -769,7 +823,8 @@ window.addEventListener("hashchange", () => {
 document.addEventListener('keydown', event => {
   if (!state.mobileNav || document.querySelector('dialog[open]')) return;
   if (event.key === 'Escape') {
-    state.mobileNav = false; render(); app.querySelector<HTMLElement>('.mobile-menu')?.focus();
+    event.preventDefault();
+    setMobileNavigation(false);
   }
   if (event.key === 'Tab') {
     const links = [...app.querySelectorAll<HTMLElement>('.sidebar a, .sidebar button, .sidebar summary')].filter(el => el.getClientRects().length);
@@ -778,7 +833,13 @@ document.addEventListener('keydown', event => {
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   }
 });
-matchMedia('(max-width: 1024px)').addEventListener('change', () => { if(state.mobileNav) { state.mobileNav=false; render(); } });
+mobileViewport.addEventListener('change', () => {
+  if (state.mobileNav) {
+    const focusInNavigation = app.querySelector('#site-navigation')?.contains(document.activeElement);
+    setMobileNavigation(false, 'none');
+    if (focusInNavigation) app.querySelector<HTMLElement>('#site-navigation a[aria-current="page"],.sidebar .brand')?.focus({ preventScroll:true });
+  }
+});
 const guideSearch = createGuideSearch({ getLocale: () => state.locale });
 if (import.meta.hot) import.meta.hot.dispose(() => { dispose(); guideSearch.destroy(); });
 document.documentElement.dir = state.locale === "ar" ? "rtl" : "ltr";
