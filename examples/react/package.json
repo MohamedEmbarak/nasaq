@@ -1,0 +1,29 @@
+{
+  "name": "@nasaq/example-react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 4174",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json",
+    "test:browser": "playwright test --config playwright.config.ts"
+  },
+  "dependencies": {
+    "@nasaq/core": "workspace:*",
+    "@nasaq/react": "workspace:*",
+    "@nasaq/styles": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "examples/react"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

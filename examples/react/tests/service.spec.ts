@@ -1,0 +1,62 @@
+import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('a native React service application supports validation, review, submission and independent preferences', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
+
+  await page.getByRole('button', { name: 'Review application', exact: true }).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  const city = page.getByRole('combobox', { name: 'City', exact: true });
+  await city.fill('riy');
+  await city.press('ArrowDown');
+  await city.press('Enter');
+  await expect(city).toHaveValue('Riyadh');
+  await page.getByRole('textbox', { name: 'Full name', exact: true }).fill('Demo Applicant');
+  await page.getByRole('textbox', { name: 'Email', exact: true }).fill('demo@example.com');
+  await page.getByRole('radio', { name: 'Business', exact: true }).check();
+  await page.getByRole('textbox', { name: 'Business name', exact: true }).fill('Demo Company');
+  await page.getByRole('textbox', { name: 'Application description', exact: true }).fill('A synthetic request for the local service example.');
+  await page.getByRole('checkbox', { name: 'I confirm that the information is accurate.', exact: true }).check();
+  const review = page.getByRole('button', { name: 'Review application', exact: true });
+  await review.click();
+  const dialog = page.getByRole('dialog', { name: 'Review your application', exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText('Demo Company', { exact: true })).toBeVisible();
+  expect(await dialog.evaluate(node => node.matches(':modal'))).toBe(true);
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  await expect(review).toBeFocused();
+  await review.click();
+  await page.getByRole('button', { name: 'Submit application', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'My requests' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('row', { name: /NQ-1025/ })).toBeVisible();
+  await page.getByRole('button', { name: 'View request NQ-1025', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: /Request details NQ-1025/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByRole('switch', { name: 'Dark mode', exact: true }).check();
+  await page.getByRole('button', { name: 'Change page direction', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-nq-mode', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('Arabic forms remain usable at a narrow viewport without horizontal page overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  const city = page.getByRole('combobox', { name: 'المدينة', exact: true });
+  await city.fill('الرياض');
+  await city.press('ArrowDown');
+  await city.press('Enter');
+  await expect(city).toHaveValue('الرياض');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
+});

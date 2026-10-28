@@ -1,0 +1,24 @@
+{
+  "package": "hijridate",
+  "version": "2.3.0",
+  "license": "MIT",
+  "author": "Mohammed Alshehri",
+  "artifact": "hijridate-2.3.0-py3-none-any.whl",
+  "artifactSHA256": "de59a435cf2598dcee2dc028a34cd9b17d1fa2f35379b32efca70ab81462edfa",
+  "derivedDataSHA256": "a4625837e906274b97b219e8d95670d633866ed7022657f7c3e8a3271bfd5d88",
+  "retrieved": "2026-10-28",
+  "source": "https://pypi.org/project/hijridate/2.3.0/",
+  "repository": "https://github.com/dralshehri/hijridate",
+  "provenance": "https://hijridate.readthedocs.io/en/stable/background.html",
+  "rangeHijri": [
+    "1343-01-01",
+    "1500-12-30"
+  ],
+  "rangeGregorian": [
+    "1924-08-01",
+    "2077-11-16"
+  ],
+  "months": 1896,
+  "days": 55991,
+  "note": "Derived from the published MIT data table. Upstream documents archival newspaper/KFUPM/official comparative calendar/KACST provenance. Nasaq has not independently re-audited every original document."
+}

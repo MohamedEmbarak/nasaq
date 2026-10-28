@@ -1,0 +1,71 @@
+{
+  "identity": "Nasaq — نسق",
+  "direction": "Woven Rhythm",
+  "mark": "نسق — Arabic-only outlined wordmark",
+  "colors": {
+    "teal": {
+      "hex": "#006A64",
+      "role": "Primary actions and logo on light surfaces"
+    },
+    "mint": {
+      "hex": "#C8E7DD",
+      "role": "Supportive surfaces; dark-mode primary actions with ink text"
+    },
+    "ivory": {
+      "hex": "#F7F5EE",
+      "role": "Warm brand canvas and reverse logo"
+    },
+    "ink": {
+      "hex": "#142D30",
+      "role": "Body text and dark canvas"
+    },
+    "white": {
+      "hex": "#FFFFFF",
+      "role": "Primary action text and neutral surface"
+    }
+  },
+  "verifiedContrastPairs": [
+    {
+      "foreground": "white",
+      "background": "teal",
+      "ratio": 6.47
+    },
+    {
+      "foreground": "teal",
+      "background": "ivory",
+      "ratio": 5.93
+    },
+    {
+      "foreground": "ink",
+      "background": "ivory",
+      "ratio": 13.3
+    },
+    {
+      "foreground": "ink",
+      "background": "mint",
+      "ratio": 11.0
+    },
+    {
+      "foreground": "mint",
+      "background": "ink",
+      "ratio": 11.0
+    },
+    {
+      "foreground": "teal",
+      "background": "mint",
+      "ratio": 4.91
+    }
+  ],
+  "contrastMethod": "WCAG relative luminance, opaque sRGB values, rounded to two decimals; these tested pairs pass 4.5:1 normal text. All other states and pairs require their own checks.",
+  "typography": {
+    "arabic": "IBM Plex Sans Arabic",
+    "latin": "IBM Plex Sans",
+    "arabicWordmarkWeight": 700,
+    "bodyWeight": 400,
+    "arabicBodyLineHeight": 1.75,
+    "latinBodyLineHeight": 1.55,
+    "arabicLetterSpacing": 0,
+    "wordmarkFamily": "Aref Ruqaa",
+    "wordmarkFormat": "Arabic-only outlined SVG artwork; no runtime font dependency. UI fonts remain IBM Plex."
+  }
+}

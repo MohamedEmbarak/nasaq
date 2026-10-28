@@ -1,0 +1,60 @@
+# Nasaq — نسق
+
+> Independent Arabic-first UI system for vanilla JavaScript, React, Vue, and Angular. DGA-informed through Platforms Code / كود المنصات / هيئة الحكومة الرقمية. DGA compliance is documented as evidence and gaps; no official endorsement or certification is claimed.
+
+Status: public 0.1 source preview under Apache-2.0. Seven packages support 77 catalog entries across vanilla, React, Vue, and Angular. The 22 native input types, variants, blocks, and integration recipes do not increase that component count. Packages are not published. Check components.json for planned, built, and verified coverage; read actual exports before generating code. Verification is scoped to recorded tests, not inferred from source presence.
+
+## Start here
+
+- [Interactive guide](https://mohamedembarak.github.io/nasaq/): getting started, live examples, component APIs and lifecycle guidance.
+- [Public repository](https://github.com/MohamedEmbarak/nasaq): source, issues and contributions.
+- [Project guide](README.md): intent, package map, and current status.
+- [Arabic guide](README.ar.md): Arabic introduction and usage context.
+- [Agent instructions](AGENTS.md): local boundaries and implementation rules.
+- [Shared contract](CONTRACT.md): package names, CSS conventions, and initial scope.
+- [Expansion contract](EXPANSION.md): 50 additions, native input semantics, calendars, responsive layout, and adapter responsibilities.
+- [Component catalog](components.json): machine-readable component metadata and status.
+- [Coverage guide](docs/coverage.md): all 77 entries, 22 native input types, national data recipes, and implementation types.
+- [Core and vanilla API](packages/core/API.md): exact helper exports, enhancement markup, controller lifecycles, and limitations.
+- [Vanilla expansion API](packages/vanilla/EXPANSION-API.md): controller markup and native/static recipes.
+- [Brand identity](brand/README.md): Woven Rhythm identity, artwork rules, typography, and provenance.
+- [Brand board](brand/index.html): inspect the chosen identity and download assets.
+- [Editable blocks](blocks/README.md): copyable application compositions and block generation.
+
+## Architecture and extension
+
+- [Architecture](docs/architecture.md): tokens and CSS plus shared behavior, native framework renderers.
+- [Specialist integrations](docs/integrations.md): practical maps/charts/editors/authentication/payments boundaries; these are recipes, not bundled engines.
+- [Calendar reliability](docs/date-calendars.md): pinned Umm al-Qura source, supported range, conversion evidence, and official-source limits.
+- [Extension guide](docs/extension.md): theme overrides, variants, composition, and component workflow.
+- [Design principles](docs/design-principles.md): Arabic-first design, semantics, understandable states, and complete journeys.
+- [DGA alignment](docs/alignment.md): verified facts, guidance, design choices, and unresolved evidence.
+- [Roadmap](docs/roadmap.md): implementation phases and acceptance gates.
+- [Validation](docs/validation.md): tested versions, exact passing-check scope, browser setup, and remaining evaluation.
+- [Publication](docs/publication.md): public source, Pages deployment, and future npm release preparation.
+
+## Implementation rules
+
+- Packages: @nasaq/tokens, @nasaq/styles, @nasaq/core, @nasaq/vanilla, @nasaq/react, @nasaq/vue, @nasaq/angular.
+- Use public exports, nq- CSS classes, and --nq- tokens. Do not invent exports or edit generated dist files.
+- Theme: data-nq-theme="nasaq|dga|custom". Mode: data-nq-mode="light|dark". Density: data-nq-density="comfortable|compact".
+- Locale, lang, and dir are separate concerns. Preserve Arabic, English, RTL, LTR, and mixed-direction text behavior.
+- Frameworks own rendering. Do not run vanilla enhancement over framework-owned component trees.
+- Core has no framework runtime dependency and no browser globals at module evaluation.
+- The logo is Arabic-only نسق in Aref Ruqaa Bold outlined SVG paths, with no runtime font dependency; its loader animates that lettering. Nasaq remains the English product name in documentation. Component/UI fonts remain IBM Plex Sans Arabic and IBM Plex Sans; do not add the logo font to component styles.
+- Shared headless behavior is project-owned; there is no Zag dependency. The combobox reducer covers local single selection.
+- Preserve semantics, labels, keyboard interaction, focus, validation, disabled states, and cleanup.
+- General number/timestamp formatting uses Intl with explicit options. Calendar/DatePicker use ISO Gregorian YYYY-MM-DD values and gregory/islamic-umalqura display. Never round-trip a date-only value through local-midnight Date.
+- Canonical Umm al-Qura conversion uses pinned HijriDate reference data through Nasaq's table-backed provider with @internationalized/date arithmetic. Read date-calendars.md; general Intl formatDate is not a canonical persisted-record converter. Never hand-code offsets or silently use an arithmetic fallback.
+- MultiSelect is a searchable checkbox list; Combobox remains local single selection. DataTable supports stable localized sorting, not virtualization or cell editing.
+- Layout uses 12 primitives and layoutStyles with responsive base/sm/md/lg/xl values resolved by CSS. No viewport JavaScript is needed.
+- Saudi phone, IBAN, identity, and address recipes collect text; backend verification belongs to the application. File selection is not upload transport; CookieConsent UI is not script gating.
+- Put product routes, business rules, data fetching, and journey state in application blocks, not shared primitives.
+- pnpm new:component <kebab-case-name> creates an editable block under blocks/, not library components or framework adapters.
+- The Angular package uses APF partial compilation. Its Vite example uses JIT and does not establish production AOT, SSR, or hydration coverage.
+- Add focused behavior and consumer checks for changed contracts. Update documentation and coverage honestly.
+- This public repository and its GitHub Pages guide are separate from npm publication. Packages remain private until an explicitly prepared npm release. Preserve Apache-2.0 and upstream font/calendar notices.
+
+## Good task context
+
+State the framework, user task, locale, direction, theme, data states, and constraints. Inspect the matching package source and example. Reuse public components; add a primitive only when composition is insufficient. Report what changed, what was verified, and what remains uncertain.

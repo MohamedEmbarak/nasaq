@@ -1,0 +1,22 @@
+{
+  "name": "@nasaq/playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@nasaq/core": "workspace:*",
+    "@nasaq/tokens": "workspace:*",
+    "@nasaq/styles": "workspace:*",
+    "@nasaq/vanilla": "workspace:*"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "apps/playground"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

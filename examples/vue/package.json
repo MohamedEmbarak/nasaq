@@ -1,0 +1,26 @@
+{
+  "name": "@nasaq/example-vue",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 4176",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@nasaq/core": "workspace:*",
+    "@nasaq/vue": "workspace:*",
+    "@nasaq/styles": "workspace:*",
+    "vue": "3.5.44"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "examples/vue"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

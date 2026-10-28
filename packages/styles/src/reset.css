@@ -1,0 +1,12 @@
+/* Optional application reset. Do not import this into an existing app by default. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { margin: 0; }
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) { margin: 0; }
+:where(button, input, select, textarea) { font: inherit; }
+:where(img, picture, video, canvas, svg) { display: block; max-inline-size: 100%; }
+:where(img, video) { block-size: auto; }
+:where(button, [role='button']) { touch-action: manipulation; }
+:where(textarea) { resize: vertical; }
+:where(table) { border-collapse: collapse; }
+:where([hidden]) { display: none !important; }

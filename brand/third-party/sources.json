@@ -1,0 +1,65 @@
+{
+  "verified_on": "2026-10-28",
+  "source": "https://github.com/google/fonts",
+  "scope": "Upstream font software remains under SIL Open Font License 1.1. Original Nasaq code, documentation, and finished artwork use the project Apache-2.0 license; no trademark rights or official endorsement are implied.",
+  "assets": [
+    {
+      "family": "ibmplexsansarabic",
+      "name": "IBMPlexSansArabic-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsansarabic/IBMPlexSansArabic-Regular.ttf",
+      "git_blob_sha": "e779068718b9801b809605b2bf3067121cce524c",
+      "bytes": 235924,
+      "sha256": "6f611412270a132bbac838da9259d4c68569b4175f3b3b8fa3fa36a30b56dab9"
+    },
+    {
+      "family": "ibmplexsansarabic",
+      "name": "IBMPlexSansArabic-SemiBold.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsansarabic/IBMPlexSansArabic-SemiBold.ttf",
+      "git_blob_sha": "f7a7fc87747a9ddabb3557d4a3f4140a7a1460b0",
+      "bytes": 244616,
+      "sha256": "597bd5502e5997be4414e4c9c88834b30ff3784250c84f20bce2b20e53ebd467"
+    },
+    {
+      "family": "ibmplexsans",
+      "name": "IBMPlexSans[wdth,wght].ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsans/IBMPlexSans%5Bwdth%2Cwght%5D.ttf",
+      "git_blob_sha": "30f837e8b02e8ecddce6cbebc425b1f422392515",
+      "bytes": 537244,
+      "sha256": "3b031aa4216174205bd8471f88a49b91f093169e9e87bd5262242bc5967fe2e3"
+    },
+    {
+      "family": "arefruqaa",
+      "name": "ArefRuqaa-Bold.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/arefruqaa/ArefRuqaa-Bold.ttf",
+      "git_blob_sha": "f5622cd3dbc6970f215cd451648500f9db9a582f",
+      "sha256": "247071015b7eefd63f94d6e47949c5d10294ed31bd432f809ba9a219d93f91bb",
+      "bytes": 123852,
+      "use": "Offline outlined-logo generation only; never loaded by application CSS or a component package."
+    },
+    {
+      "family": "arefruqaa",
+      "name": "OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/arefruqaa/OFL.txt",
+      "git_blob_sha": "f89db8233df5ee80af5f86b74ade558305ee13aa",
+      "sha256": "41ac14451a624c69490e24b9aaaaa1f65dc9dc17c3f6f38172fc43d5ba654a1b",
+      "bytes": 4464,
+      "use": "Offline outlined-logo generation only; never loaded by application CSS or a component package."
+    },
+    {
+      "family": "ibmplexsans",
+      "name": "OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsans/OFL.txt",
+      "git_blob_sha": "ef89108cef7ca226d16664b01d57234ec4ac26ae",
+      "bytes": 4364,
+      "sha256": "b5895d3f4ea58b2fc80c3041a8c855d372836c34950d6ebc6e3c8897e7b2c8fb"
+    },
+    {
+      "family": "ibmplexsansarabic",
+      "name": "OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsansarabic/OFL.txt",
+      "git_blob_sha": "ef89108cef7ca226d16664b01d57234ec4ac26ae",
+      "bytes": 4364,
+      "sha256": "b5895d3f4ea58b2fc80c3041a8c855d372836c34950d6ebc6e3c8897e7b2c8fb"
+    }
+  ]
+}

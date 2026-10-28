@@ -1,0 +1,50 @@
+{
+  "name": "@nasaq/vanilla",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "EXPANSION-API.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@nasaq/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "nasaq",
+    "dga",
+    "sdga",
+    "platforms-code",
+    "saudi-design-system",
+    "arabic",
+    "rtl",
+    "ui-components",
+    "vanilla"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "packages/vanilla"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

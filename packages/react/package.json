@@ -1,0 +1,50 @@
+{
+  "name": "@nasaq/react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@nasaq/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "keywords": [
+    "nasaq",
+    "dga",
+    "sdga",
+    "platforms-code",
+    "saudi-design-system",
+    "arabic",
+    "rtl",
+    "ui-components",
+    "react"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

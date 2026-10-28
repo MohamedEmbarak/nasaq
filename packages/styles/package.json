@@ -1,0 +1,46 @@
+{
+  "name": "@nasaq/styles",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-neutral, Arabic-first Nasaq component styles",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": "./dist/styles.css",
+    "./styles.css": "./dist/styles.css",
+    "./reset.css": "./dist/reset.css",
+    "./assets/*": "./dist/assets/*"
+  },
+  "dependencies": {
+    "@nasaq/tokens": "workspace:*"
+  },
+  "keywords": [
+    "nasaq",
+    "dga",
+    "sdga",
+    "platforms-code",
+    "saudi-design-system",
+    "arabic",
+    "rtl",
+    "ui-components",
+    "styles"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "packages/styles"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

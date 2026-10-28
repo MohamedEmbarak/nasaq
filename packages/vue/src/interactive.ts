@@ -1,0 +1,168 @@
+import { cloneVNode, computed, defineComponent, h, isVNode, mergeProps, onBeforeUnmount, onMounted, ref, useId, watch, watchEffect } from 'vue';
+import type { PropType, VNodeChild } from 'vue';
+import { createComboboxState, getComboboxOptions, getDirection, getNextEnabledIndex, restoreFocus, transitionCombobox } from '@nasaq/core';
+import type { ComboboxEvent, Option, Orientation } from '@nasaq/core';
+import { Button, decorate } from './forms.js';
+import { decorationProps, joinIds, useField, useFormReset, useValue } from './shared.js';
+
+export interface TabItem { value: string; label: string; content?: VNodeChild; disabled?: boolean }
+export const Tabs = defineComponent({
+  name: 'NqTabs', inheritAttrs: false,
+  props: { items: { type: Array as PropType<readonly TabItem[]>, required: true }, label: { type: String, required: true }, modelValue: String, defaultValue: String,
+    orientation: { type: String as PropType<Orientation>, default: 'horizontal' }, activationMode: { type: String as PropType<'automatic' | 'manual'>, default: 'automatic' } },
+  emits: { 'update:modelValue': (_value: string) => true },
+  setup(props, { attrs, slots, emit }) {
+    const id = `nq-${useId()}`;
+    const model = useValue(() => props.modelValue, props.defaultValue ?? props.items.find(item => !item.disabled)?.value ?? '', value => emit('update:modelValue', value));
+    const focused = ref<string>();
+    const active = computed(() => props.items.find(item => item.value === model.value.value && !item.disabled)?.value ?? props.items.find(item => !item.disabled)?.value);
+    const buttons = new Map<string, HTMLButtonElement>();
+    return () => h('div', mergeProps(attrs, { class: 'nq-tabs' }), [
+      h('div', { class: 'nq-tab-list', role: 'tablist', 'aria-label': props.label, 'aria-orientation': props.orientation }, props.items.map((item, index) => h('button', {
+        key: item.value, ref: (element: unknown) => { if (element) buttons.set(item.value, element as HTMLButtonElement); else buttons.delete(item.value); },
+        class: 'nq-tab', type: 'button', role: 'tab', id: `${id}-tab-${index}`, 'aria-controls': `${id}-panel-${index}`, 'aria-selected': active.value === item.value,
+        tabindex: (props.items.find(candidate => candidate.value === focused.value && !candidate.disabled)?.value ?? active.value) === item.value ? 0 : -1, disabled: item.disabled,
+        onFocus: () => { focused.value = item.value; }, onClick: () => model.set(item.value),
+        onKeydown: (event: KeyboardEvent) => {
+          const keys = props.orientation === 'vertical' ? ['ArrowDown', 'ArrowUp', 'Home', 'End'] : ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+          if (!keys.includes(event.key)) return;
+          event.preventDefault();
+          const next = props.items[getNextEnabledIndex(index, event.key, props.items, getDirection(event.currentTarget as Element), props.orientation)];
+          if (!next) return;
+          focused.value = next.value; buttons.get(next.value)?.focus();
+          if (props.activationMode === 'automatic') model.set(next.value);
+        },
+      }, slots[`tab:${item.value}`]?.({ item }) ?? item.label))),
+      ...props.items.map((item, index) => h('section', { key: item.value, class: 'nq-tab-panel', id: `${id}-panel-${index}`, role: 'tabpanel', 'aria-labelledby': `${id}-tab-${index}`, tabindex: 0, hidden: active.value !== item.value }, [slots[item.value]?.() ?? item.content])),
+    ]);
+  },
+});
+
+export const Dialog = defineComponent({
+  name: 'NqDialog', inheritAttrs: false,
+  props: { open: { type: Boolean, default: undefined }, defaultOpen: Boolean, title: { type: String, required: true }, description: String, closeLabel: { type: String, default: 'Close' }, closeOnBackdrop: { type: Boolean, default: true } },
+  emits: { 'update:open': (_open: boolean) => true },
+  setup(props, { attrs, slots, emit, expose }) {
+    const id = `nq-${useId()}`;
+    const element = ref<HTMLDialogElement>();
+    const model = useValue(() => props.open, props.defaultOpen, value => emit('update:open', value));
+    let previousFocus: HTMLElement | null = null;
+    const close = () => model.set(false);
+    const show = () => model.set(true);
+    watchEffect(() => {
+      const dialog = element.value;
+      if (!dialog) return;
+      if (model.value.value && !dialog.open) {
+        previousFocus = dialog.ownerDocument.activeElement as HTMLElement | null;
+        dialog.showModal();
+      } else if (!model.value.value && dialog.open) { dialog.close(); restoreFocus(previousFocus); }
+    }, { flush: 'post' });
+    onBeforeUnmount(() => { if (element.value?.open) { element.value.close(); restoreFocus(previousFocus); } });
+    expose({ element, show, close });
+    return () => [slots.trigger?.({ open: show }), h('dialog', mergeProps(attrs, {
+      ref: element, class: 'nq-dialog', 'aria-labelledby': attrs['aria-labelledby'] ?? `${id}-title`, 'aria-describedby': attrs['aria-describedby'] ?? (props.description ? `${id}-description` : undefined),
+      onCancel: (event: Event) => { if (!event.defaultPrevented) { event.preventDefault(); close(); } },
+      onClose: () => { if (model.value.value) close(); restoreFocus(previousFocus); },
+      onClick: (event: MouseEvent) => {
+        if (event.defaultPrevented || !props.closeOnBackdrop || event.target !== event.currentTarget) return;
+        const bounds = element.value!.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) close();
+      },
+    }), [
+      h('header', { class: 'nq-dialog-header' }, [h('h2', { id: `${id}-title` }, props.title), h(Button, { variant: 'ghost', 'aria-label': props.closeLabel, onClick: close }, () => '×')]),
+      h('div', { class: 'nq-dialog-body' }, [props.description && h('p', { id: `${id}-description` }, props.description), slots.default?.({ close })]),
+      slots.footer && h('footer', { class: 'nq-dialog-footer' }, slots.footer({ close })),
+    ])];
+  },
+});
+
+export const Combobox = defineComponent({
+  name: 'NqCombobox', inheritAttrs: false,
+  props: { ...decorationProps, options: { type: Array as PropType<readonly Option[]>, required: true }, modelValue: String, defaultValue: { type: String, default: '' }, disabled: Boolean, readonly: Boolean,
+    emptyMessage: { type: String, default: 'No options found' }, resultsMessage: { type: Function as PropType<(count: number) => string>, default: (count: number) => `${count} results available` }, requiredMessage: { type: String, default: 'Choose an option from the list.' } },
+  emits: { 'update:modelValue': (_value: string) => true, 'update:open': (_open: boolean) => true, 'update:query': (_query: string) => true },
+  setup(props, { attrs, emit, expose }) {
+    const field = useField(props, attrs);
+    const element = ref<HTMLInputElement>();
+    const root = ref<HTMLElement>();
+    const state = ref(createComboboxState(props.options, props.modelValue ?? props.defaultValue));
+    const effective = computed(() => ({ ...state.value, value: props.modelValue ?? state.value.value,
+      query: props.modelValue !== undefined && props.modelValue !== state.value.value ? createComboboxState(props.options, props.modelValue).query : state.value.query,
+      open: !props.disabled && !props.readonly && state.value.open }));
+    const results = computed(() => getComboboxOptions(effective.value, props.options));
+    let lastEmitted: string | undefined;
+    function dispatch(event: ComboboxEvent) {
+      if ((props.disabled || props.readonly) && event.type !== 'close' && event.type !== 'reset') return;
+      const previous = effective.value;
+      const next = transitionCombobox(previous, event, props.options);
+      state.value = next;
+      if (next.value !== previous.value) { lastEmitted = next.value; emit('update:modelValue', next.value); }
+      if (next.open !== previous.open) emit('update:open', next.open);
+    }
+    watch(() => props.modelValue, value => {
+      if (value === undefined) return;
+      if (value === lastEmitted) { lastEmitted = undefined; state.value = { ...state.value, value }; }
+      else state.value = { ...createComboboxState(props.options, value), open: state.value.open };
+    });
+    watch(() => props.options, options => {
+      if (effective.value.value) state.value = { ...createComboboxState(options, effective.value.value), open: state.value.open };
+    });
+    watchEffect(() => element.value?.setCustomValidity(field.controlAttrs.value.required && !effective.value.value ? props.requiredMessage : ''));
+    useFormReset(element, () => dispatch({ type: 'reset', value: props.defaultValue }));
+    const outside = (event: Event) => { if (!root.value?.contains(event.target as Node)) dispatch({ type: 'close' }); };
+    onMounted(() => element.value?.ownerDocument.addEventListener('pointerdown', outside));
+    onBeforeUnmount(() => element.value?.ownerDocument.removeEventListener('pointerdown', outside));
+    expose({ element, focus: () => element.value?.focus(), close: () => dispatch({ type: 'close' }) });
+    return () => {
+      const { name, form, ...inputAttrs } = attrs;
+      const listId = `${field.id.value}-listbox`;
+      const active = results.value[state.value.activeIndex];
+      const open = effective.value.open;
+      const query = effective.value.query;
+      return decorate(props, field.id.value, h('div', { ref: root, class: 'nq-combobox', onFocusout: (event: FocusEvent) => { if (!root.value?.contains(event.relatedTarget as Node | null)) dispatch({ type: 'close' }); } }, [
+        h('input', mergeProps(inputAttrs, field.controlAttrs.value, { ref: element, form, disabled: props.disabled, readonly: props.readonly, class: 'nq-input', type: 'text', role: 'combobox', autocomplete: 'off', 'aria-autocomplete': 'list', 'aria-expanded': open, 'aria-controls': listId,
+          'aria-activedescendant': open && active && !active.disabled ? `${field.id.value}-option-${state.value.activeIndex}` : undefined, value: query,
+          onInput: (event: Event) => { const query = (event.target as HTMLInputElement).value; dispatch({ type: 'input', query }); emit('update:query', query); },
+          onFocus: (event: FocusEvent) => { if (!event.defaultPrevented) dispatch({ type: 'open' }); },
+          onClick: (event: MouseEvent) => { if (!event.defaultPrevented && !open) dispatch({ type: 'open' }); },
+          onKeydown: (event: KeyboardEvent) => {
+            if (event.defaultPrevented || event.isComposing || props.disabled || props.readonly) return;
+            if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+              if (!open && (event.key === 'Home' || event.key === 'End')) return;
+              event.preventDefault(); dispatch({ type: 'navigate', key: event.key as 'ArrowDown' | 'ArrowUp' | 'Home' | 'End' });
+            } else if (event.key === 'Enter' && open && active && !active.disabled) { event.preventDefault(); dispatch({ type: 'select', value: active.value }); }
+            else if (event.key === 'Escape' && open) { event.preventDefault(); event.stopPropagation(); dispatch({ type: 'close' }); }
+            else if (event.key === 'Tab') dispatch({ type: 'close' });
+          },
+        })),
+        h('input', { type: 'hidden', name, form, disabled: props.disabled, value: effective.value.value }),
+        h('ul', { id: listId, role: 'listbox', class: 'nq-listbox', 'aria-label': attrs['aria-label'], 'aria-labelledby': field.controlAttrs.value['aria-labelledby'], hidden: !open }, [
+          ...results.value.map((option, index) => h('li', { key: option.value, id: `${field.id.value}-option-${index}`, role: 'option', class: 'nq-option', 'aria-selected': effective.value.value === option.value, 'aria-disabled': option.disabled || undefined,
+            'data-active': state.value.activeIndex === index ? 'true' : undefined, 'data-state': state.value.activeIndex === index ? 'active' : undefined,
+            onPointerdown: (event: PointerEvent) => event.preventDefault(), onClick: () => { if (!option.disabled) { dispatch({ type: 'select', value: option.value }); element.value?.focus(); } },
+          }, option.label)), !results.value.length && h('li', { role: 'presentation', class: 'nq-hint' }, props.emptyMessage),
+        ]),
+        h('span', { class: 'nq-sr-only', role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' }, open ? props.resultsMessage(results.value.length) : ''),
+      ]));
+    };
+  },
+});
+
+export const Tooltip = defineComponent({
+  name: 'NqTooltip', inheritAttrs: false, props: { content: { type: String, required: true } },
+  setup(props, { attrs, slots }) {
+    const id = `nq-${useId()}`;
+    const open = ref(false);
+    const root = ref<HTMLElement>();
+    const outside = (event: Event) => { if (!root.value?.contains(event.target as Node)) open.value = false; };
+    onMounted(() => root.value?.ownerDocument.addEventListener('pointerdown', outside));
+    onBeforeUnmount(() => root.value?.ownerDocument.removeEventListener('pointerdown', outside));
+    return () => {
+      const children = slots.default?.() ?? [];
+      return h('span', mergeProps(attrs, { ref: root, 'data-nq': 'tooltip', onMouseenter: () => { open.value = true; }, onMouseleave: () => { if (!root.value?.contains(root.value.ownerDocument.activeElement)) open.value = false; }, onFocusin: () => { open.value = true; }, onFocusout: (event: FocusEvent) => { if (!root.value?.contains(event.relatedTarget as Node | null)) open.value = false; }, onKeydown: (event: KeyboardEvent) => { if (event.key === 'Escape') { event.stopPropagation(); open.value = false; } } }), [
+        ...children.map(child => isVNode(child) ? cloneVNode(child, { 'aria-describedby': joinIds(child.props?.['aria-describedby'], id) }) : child),
+        h('span', { id, role: 'tooltip', class: 'nq-tooltip', hidden: !open.value }, props.content),
+      ]);
+    };
+  },
+});

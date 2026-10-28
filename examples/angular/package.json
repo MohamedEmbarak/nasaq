@@ -1,0 +1,33 @@
+{
+  "name": "@nasaq/example-angular",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test:browser": "node test/browser.mjs"
+  },
+  "dependencies": {
+    "@nasaq/angular": "workspace:*",
+    "@nasaq/styles": "workspace:*",
+    "@nasaq/core": "workspace:*",
+    "@angular/core": "^22.0.0",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "examples/angular"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

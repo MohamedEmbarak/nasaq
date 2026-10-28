@@ -1,0 +1,4839 @@
+{
+  "schemaVersion": 1,
+  "name": "Nasaq",
+  "nameAr": "نسق",
+  "version": "0.1.0",
+  "lifecycle": "public-source-preview",
+  "description": "Independent Arabic-first UI components informed by DGA Platforms Code; no official endorsement or certification is claimed.",
+  "keywords": [
+    "DGA",
+    "DGA compliance",
+    "Platforms Code",
+    "هيئة الحكومة الرقمية",
+    "كود المنصات",
+    "RTL",
+    "Arabic",
+    "vanilla",
+    "React",
+    "Vue",
+    "Angular",
+    "KSA",
+    "Kingdom of Saudi Arabia",
+    "Unified Design System",
+    "نظام التصميم الموحد"
+  ],
+  "statusDefinitions": {
+    "planned": "An adapter is in scope; source may not exist yet.",
+    "built": "Source exists for the named adapter; this does not establish complete verification.",
+    "verified": "The named adapter has direct behavior, semantic-association, or layout-contract assertions recorded in evidence. Scope is limited to those cases; rendering-only and broad suite checks remain separate. This is not a blanket accessibility or DGA certification."
+  },
+  "coverageNote": "77 entries: initial 27 plus 50 additions. Built records inspected source/export presence. Native/static vanilla entries use semantic HTML/CSS recipes; interactive entries also have exported controllers. The 22 native input types, variants, blocks, and specialist integration recipes are not extra components. Verified requires scoped passing evidence; rendering or source presence alone does not verify behavior. No release, accessibility, or DGA certification is implied.",
+  "docs": {
+    "overview": "README.md",
+    "overviewAr": "README.ar.md",
+    "architecture": "docs/architecture.md",
+    "extension": "docs/extension.md",
+    "alignment": "docs/alignment.md",
+    "roadmap": "docs/roadmap.md",
+    "behavior": "packages/core/API.md",
+    "brand": "brand/README.md",
+    "blocks": "blocks/README.md",
+    "validation": "docs/validation.md",
+    "coverage": "docs/coverage.md",
+    "integrations": "docs/integrations.md",
+    "calendars": "docs/date-calendars.md",
+    "expansionContract": "EXPANSION.md",
+    "vanillaExpansion": "packages/vanilla/EXPANSION-API.md"
+  },
+  "adapters": {
+    "vanilla": "@nasaq/vanilla",
+    "react": "@nasaq/react",
+    "vue": "@nasaq/vue",
+    "angular": "@nasaq/angular"
+  },
+  "components": [
+    {
+      "id": "button",
+      "name": "Button",
+      "labelAr": "زر",
+      "category": "actions",
+      "description": "Native action button with documented visual variants.",
+      "cssClasses": [
+        "nq-button"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "react"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "uses native modality, cancel and focus restoration"
+          ],
+          "scope": "Button trigger action and focus restoration; Dialog native-method and cancellation lifecycle in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Use a link for navigation and a button for an action."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/button"
+    },
+    {
+      "id": "field",
+      "name": "Field",
+      "labelAr": "حقل",
+      "category": "forms",
+      "description": "Label, help, error, and control composition.",
+      "cssClasses": [
+        "nq-field",
+        "nq-label",
+        "nq-hint",
+        "nq-error"
+      ],
+      "interaction": "composition",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "semantics-and-behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "associates a field, hint, error and forwarded input ref without losing form behavior"
+          ],
+          "scope": "Label/help/error/required associations, forwarded input ref, and submitted text/checkbox form values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "semantics-and-behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "connects Field labels, error and required state to native inputs and forwards handlers"
+          ],
+          "scope": "Label/help/error/required associations, native input event forwarding, and model updates.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "hydration",
+          "source": "packages/react/react.hydration.test.tsx",
+          "tests": [
+            "hydrates generated associations without recovery or node replacement and retains keyboard behavior"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "hydration",
+          "source": "packages/vue/test/hydration.test.ts",
+          "tests": [
+            "hydrates stable accessible IDs without mismatches and retains working controls"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Field and TextField may be composed differently by each adapter."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/field"
+    },
+    {
+      "id": "text-field",
+      "name": "TextField",
+      "labelAr": "إدخال نصي",
+      "category": "forms",
+      "description": "Single-line text entry with native input semantics.",
+      "cssClasses": [
+        "nq-input"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "semantics-and-behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "associates a field, hint, error and forwarded input ref without losing form behavior"
+          ],
+          "scope": "Label/help/error/required associations, forwarded input ref, and submitted text/checkbox form values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "semantics-and-behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "connects Field labels, error and required state to native inputs and forwards handlers"
+          ],
+          "scope": "Label/help/error/required associations, native input event forwarding, and model updates.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/components.test.ts",
+          "tests": [
+            "propagates model writes, native input changes and disabled state through Angular forms"
+          ],
+          "scope": "Angular model-to-view/view-to-model propagation, label association, and disabled state.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "hydration",
+          "source": "packages/react/react.hydration.test.tsx",
+          "tests": [
+            "hydrates generated associations without recovery or node replacement and retains keyboard behavior"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "hydration",
+          "source": "packages/vue/test/hydration.test.ts",
+          "tests": [
+            "hydrates stable accessible IDs without mismatches and retains working controls"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Business validation belongs to the consuming application."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/text-field"
+    },
+    {
+      "id": "textarea",
+      "name": "Textarea",
+      "labelAr": "مساحة نصية",
+      "category": "forms",
+      "description": "Multiline text entry.",
+      "cssClasses": [
+        "nq-textarea"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/textarea"
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "labelAr": "قائمة اختيار",
+      "category": "forms",
+      "description": "Native single-choice select.",
+      "cssClasses": [
+        "nq-select"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Use Combobox when an editable search is required."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/select"
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "labelAr": "مربع اختيار",
+      "category": "forms",
+      "description": "Native independent checked state.",
+      "cssClasses": [
+        "nq-checkbox"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "semantics-and-behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "associates a field, hint, error and forwarded input ref without losing form behavior"
+          ],
+          "scope": "Label/help/error/required associations, forwarded input ref, and submitted text/checkbox form values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "bounds pagination and updates boolean v-model"
+          ],
+          "scope": "Bounded pagination, page model change, and checkbox boolean model change.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/checkbox"
+    },
+    {
+      "id": "radio",
+      "name": "Radio",
+      "labelAr": "خيار واحد",
+      "category": "forms",
+      "description": "Native mutually exclusive selection.",
+      "cssClasses": [
+        "nq-radio"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Group related options with an accessible group label."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/radio"
+    },
+    {
+      "id": "switch",
+      "name": "Switch",
+      "labelAr": "مفتاح تبديل",
+      "category": "forms",
+      "description": "Binary on/off setting.",
+      "cssClasses": [
+        "nq-switch"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Keep the accessible label stable when the state changes."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/switch"
+    },
+    {
+      "id": "tabs",
+      "name": "Tabs",
+      "labelAr": "تبويبات",
+      "category": "navigation",
+      "description": "Related panels with keyboard-controlled tab selection.",
+      "cssClasses": [
+        "nq-tabs",
+        "nq-tab-list",
+        "nq-tab",
+        "nq-tab-panel"
+      ],
+      "interaction": "enhanced",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/vanilla.test.ts",
+          "tests": [
+            "moves visually in RTL, skips disabled tabs, and restores authored DOM",
+            "supports manual activation without changing selection on focus movement",
+            "does not submit a containing form when an authored tab button has no type"
+          ],
+          "scope": "RTL navigation, disabled skipping, manual activation, form button semantics, and cleanup.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-behavior",
+          "source": "tests/browser/playground.spec.ts",
+          "tests": [
+            "Arabic component tabs follow visual RTL and combobox selection remains explicit"
+          ],
+          "scope": "Real Chromium RTL tab focus and explicit combobox commitment.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "follows RTL arrow direction, skips disabled tabs and maintains roving focus",
+            "manual activation moves focus before selecting, and controlled selection stays with the caller"
+          ],
+          "scope": "RTL navigation, disabled skipping, roving focus, manual activation, and controlled selection.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "makes tabs follow RTL, skip disabled items and preserve manual activation"
+          ],
+          "scope": "RTL roving focus, disabled skipping, manual activation, and panel visibility.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/components.test.ts",
+          "tests": [
+            "navigates RTL tabs with disabled skipping and manual activation"
+          ],
+          "scope": "RTL focus, disabled skipping, manual activation, model propagation, and hidden panel state.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "hydration",
+          "source": "packages/react/react.hydration.test.tsx",
+          "tests": [
+            "hydrates generated associations without recovery or node replacement and retains keyboard behavior"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "hydration",
+          "source": "packages/vue/test/hydration.test.ts",
+          "tests": [
+            "hydrates stable accessible IDs without mismatches and retains working controls"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Horizontal key behavior follows direction; vertical behavior follows orientation."
+      ],
+      "sourceType": "interactive",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/tabs"
+    },
+    {
+      "id": "dialog",
+      "name": "Dialog",
+      "labelAr": "حوار",
+      "category": "overlays",
+      "description": "Native modal dialog with explicit open and close lifecycle.",
+      "cssClasses": [
+        "nq-dialog",
+        "nq-dialog-header",
+        "nq-dialog-body",
+        "nq-dialog-footer"
+      ],
+      "interaction": "enhanced",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/vanilla.test.ts",
+          "tests": [
+            "uses native modal methods and restores focus, including destroy while open"
+          ],
+          "scope": "Controller lifecycle and focus restoration in a simulated DOM; native modality additionally checked in Chromium.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-behavior",
+          "source": "tests/browser/playground.spec.ts",
+          "tests": [
+            "component modal contains focus and Escape restores it; tooltip persists across hover and dismisses"
+          ],
+          "scope": "Real Chromium native modal focus containment/restoration and tooltip hover/focus/Escape behavior.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "uses native modality, cancel and focus restoration"
+          ],
+          "scope": "Button trigger action and focus restoration; Dialog native-method and cancellation lifecycle in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "keeps a default-open modal open after StrictMode replays its effects",
+            "reconciles a native close when a controlled caller keeps the dialog open"
+          ],
+          "scope": "StrictMode lifecycle replay and controlled close reconciliation.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "uses native dialog lifecycle, emits cancellation and returns focus"
+          ],
+          "scope": "Dialog methods, cancellation event, model state, and focus restoration in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "browser-behavior",
+          "source": "examples/angular/test/browser.mjs",
+          "tests": [
+            "Angular browser proof passed: native form, Arabic combobox, conditional flow, native modal/Escape/focus, request state, RTL/theme/mobile."
+          ],
+          "scope": "Real Chromium modal review, Escape dismissal, and restored opener focus in the example application.",
+          "command": "pnpm --filter @nasaq/example-angular test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "hydration",
+          "source": "packages/react/react.hydration.test.tsx",
+          "tests": [
+            "hydrates generated associations without recovery or node replacement and retains keyboard behavior"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "hydration",
+          "source": "packages/vue/test/hydration.test.ts",
+          "tests": [
+            "hydrates stable accessible IDs without mismatches and retains working controls"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Native dialog support is required by the initial vanilla implementation."
+      ],
+      "sourceType": "interactive",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/dialog"
+    },
+    {
+      "id": "combobox",
+      "name": "Combobox",
+      "labelAr": "اختيار قابل للبحث",
+      "category": "forms",
+      "description": "Editable single-select search and selection.",
+      "cssClasses": [
+        "nq-combobox",
+        "nq-listbox",
+        "nq-option"
+      ],
+      "interaction": "enhanced",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/vanilla.test.ts",
+          "tests": [
+            "filters Arabic, skips disabled items, commits explicitly, and emits one change",
+            "leaves text editing and IME alone, closes on blur/outside and resets forms",
+            "requires a committed option, reacts to required changes, and restores custom validity",
+            "excludes a disabled combobox from native form submission and restores it on teardown"
+          ],
+          "scope": "Explicit selection, Arabic search, editing/IME, close/reset, validity, disabled submission, and cleanup.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-behavior",
+          "source": "tests/browser/playground.spec.ts",
+          "tests": [
+            "Arabic component tabs follow visual RTL and combobox selection remains explicit"
+          ],
+          "scope": "Real Chromium RTL tab focus and explicit combobox commitment.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "filters Arabic, commits enabled options by keyboard, and submits the selected value",
+            "retains the first typed character when controlled selection is cleared and leaves arbitrary queries uncommitted",
+            "keeps a controlled committed selection when the caller rejects a new option",
+            "does not treat a disabled controlled option as a valid form value",
+            "reconciles changed option labels without erasing a query and honors canceled resets",
+            "resets uncontrolled selection with its owning native form"
+          ],
+          "scope": "Arabic filtering, explicit selection, controlled reconciliation, native form values/validity, and reset cases.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "commits only enabled combobox options, retains typed query, and restores form defaults",
+            "keeps readonly combobox values fixed and reconciles rejected controlled selections"
+          ],
+          "scope": "Explicit selection, disabled skipping, queries, native form validity/reset, readonly state, and controlled rejection.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/components.test.ts",
+          "tests": [
+            "uses explicit combobox selection, skips disabled options, and does not select on blur",
+            "resets the combobox through ngForm without a stale committed value",
+            "preserves editing shortcuts and IME, closes outside, and validates required selection"
+          ],
+          "scope": "Explicit commitment, disabled skipping, blur, Angular form reset, editing/IME, outside closing, and required validation.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "hydration",
+          "source": "packages/react/react.hydration.test.tsx",
+          "tests": [
+            "hydrates generated associations without recovery or node replacement and retains keyboard behavior"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "hydration",
+          "source": "packages/vue/test/hydration.test.ts",
+          "tests": [
+            "hydrates stable accessible IDs without mismatches and retains working controls"
+          ],
+          "scope": "Focused hydration case with stable linked IDs, retained DOM, no mismatch warnings, and working Tabs/Combobox after hydration. Dialog remains closed in this case.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Initial scope excludes multiselect, async loading, and virtualization."
+      ],
+      "sourceType": "interactive",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/combobox"
+    },
+    {
+      "id": "accordion",
+      "name": "Accordion",
+      "labelAr": "أقسام قابلة للطي",
+      "category": "disclosure",
+      "description": "Disclosure sections using native details and summary.",
+      "cssClasses": [
+        "nq-accordion",
+        "nq-accordion-item",
+        "nq-accordion-trigger"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/accordion"
+    },
+    {
+      "id": "card",
+      "name": "Card",
+      "labelAr": "بطاقة",
+      "category": "layout",
+      "description": "Content grouping with composable header, body, and footer.",
+      "cssClasses": [
+        "nq-card",
+        "nq-card-header",
+        "nq-card-body",
+        "nq-card-footer"
+      ],
+      "interaction": "composition",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/card"
+    },
+    {
+      "id": "badge",
+      "name": "Badge",
+      "labelAr": "شارة",
+      "category": "feedback",
+      "description": "Compact label or status indicator.",
+      "cssClasses": [
+        "nq-badge"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Provide meaningful text; color alone is insufficient."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/badge"
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "labelAr": "تنبيه",
+      "category": "feedback",
+      "description": "Contextual information, success, warning, or error message.",
+      "cssClasses": [
+        "nq-alert"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Choose announcement semantics according to urgency and timing."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/alert"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "labelAr": "جدول",
+      "category": "data-display",
+      "description": "Semantic table presentation.",
+      "cssClasses": [
+        "nq-table-wrap",
+        "nq-table"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Filtering, sorting, pagination, and fetching remain explicit application behavior."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/table"
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "labelAr": "ترقيم الصفحات",
+      "category": "navigation",
+      "description": "Page selection controls with current and boundary states.",
+      "cssClasses": [
+        "nq-pagination"
+      ],
+      "interaction": "enhanced",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/vanilla.test.ts",
+          "tests": [
+            "updates pagination boundaries and current page without trapping keyboard focus"
+          ],
+          "scope": "Page selection, boundary disabling, current-page state, and keyboard focus.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "keeps pagination bounded, including large result sets"
+          ],
+          "scope": "Bounded visible page controls, boundary state, and page-change callback.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "bounds pagination and updates boolean v-model"
+          ],
+          "scope": "Bounded pagination, page model change, and checkbox boolean model change.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "The component does not fetch data."
+      ],
+      "sourceType": "interactive",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/pagination"
+    },
+    {
+      "id": "breadcrumb",
+      "name": "Breadcrumb",
+      "labelAr": "مسار التنقل",
+      "category": "navigation",
+      "description": "Navigation path with a clearly identified current page.",
+      "cssClasses": [
+        "nq-breadcrumb"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/breadcrumb"
+    },
+    {
+      "id": "progress",
+      "name": "Progress",
+      "labelAr": "تقدم",
+      "category": "feedback",
+      "description": "Progress indication with accessible value semantics.",
+      "cssClasses": [
+        "nq-progress"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/progress"
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "labelAr": "عنصر تحميل",
+      "category": "feedback",
+      "description": "Visual placeholder while content loads.",
+      "cssClasses": [
+        "nq-skeleton"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Announce the containing loading state rather than every decorative placeholder."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/skeleton"
+    },
+    {
+      "id": "spinner",
+      "name": "Spinner",
+      "labelAr": "مؤشر تحميل",
+      "category": "feedback",
+      "description": "Compact indeterminate loading indicator.",
+      "cssClasses": [
+        "nq-spinner"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Supply understandable status text in context."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/spinner"
+    },
+    {
+      "id": "avatar",
+      "name": "Avatar",
+      "labelAr": "صورة رمزية",
+      "category": "data-display",
+      "description": "Person or entity image with fallback content.",
+      "cssClasses": [
+        "nq-avatar"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Image alternative text depends on nearby identifying text."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/avatar"
+    },
+    {
+      "id": "divider",
+      "name": "Divider",
+      "labelAr": "فاصل",
+      "category": "layout",
+      "description": "Visual or semantic separation.",
+      "cssClasses": [
+        "nq-divider"
+      ],
+      "interaction": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/divider"
+    },
+    {
+      "id": "tooltip",
+      "name": "Tooltip",
+      "labelAr": "تلميح",
+      "category": "overlays",
+      "description": "Noninteractive descriptive content on hover and focus.",
+      "cssClasses": [
+        "nq-tooltip"
+      ],
+      "interaction": "enhanced",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/vanilla.test.ts",
+          "tests": [
+            "keeps tooltip open across pointer movement and preserves existing descriptions"
+          ],
+          "scope": "Hover persistence, description association, and cleanup.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-behavior",
+          "source": "tests/browser/playground.spec.ts",
+          "tests": [
+            "component modal contains focus and Escape restores it; tooltip persists across hover and dismisses"
+          ],
+          "scope": "Real Chromium native modal focus containment/restoration and tooltip hover/focus/Escape behavior.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.interaction.test.tsx",
+          "tests": [
+            "reveals a descriptive tooltip on focus and dismisses it with Escape"
+          ],
+          "scope": "Focus reveal, description linkage, and Escape dismissal.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/components.test.ts",
+          "tests": [
+            "keeps tooltip description attached while handling focus and Escape"
+          ],
+          "scope": "Description association, focus reveal, and Escape dismissal.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "notes": [
+        "Do not place essential or interactive content solely in a tooltip."
+      ],
+      "sourceType": "interactive",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/tooltip"
+    },
+    {
+      "id": "file-upload",
+      "name": "FileUpload",
+      "labelAr": "رفع ملف",
+      "category": "forms",
+      "description": "Native file selection presented within a reusable field.",
+      "cssClasses": [
+        "nq-upload"
+      ],
+      "interaction": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Selection does not upload files; transport, server validation, and progress belong to the application."
+      ],
+      "sourceType": "native",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/file-upload"
+    },
+    {
+      "id": "stepper",
+      "name": "Stepper",
+      "labelAr": "خطوات",
+      "category": "navigation",
+      "description": "Current and completed stages in a process.",
+      "cssClasses": [
+        "nq-stepper",
+        "nq-step"
+      ],
+      "interaction": "composition",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [
+        "Journey navigation and validation belong to the application."
+      ],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/stepper"
+    },
+    {
+      "id": "empty-state",
+      "name": "EmptyState",
+      "labelAr": "حالة فارغة",
+      "category": "feedback",
+      "description": "Explain absent content and offer an appropriate next action.",
+      "cssClasses": [
+        "nq-empty"
+      ],
+      "interaction": "composition",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "notes": [],
+      "sourceType": "static",
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/empty-state"
+    },
+    {
+      "id": "input-group",
+      "name": "InputGroup",
+      "labelAr": "مجموعة إدخال",
+      "category": "forms",
+      "description": "Compose input prefixes, suffixes, and actions with a labelled control.",
+      "cssClasses": [
+        "nq-input-group"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "The surrounding group does not replace the actual input label."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/input-group"
+    },
+    {
+      "id": "password-field",
+      "name": "PasswordField",
+      "labelAr": "كلمة المرور",
+      "category": "forms",
+      "description": "Native password entry with explicit visibility toggle.",
+      "cssClasses": [
+        "nq-password-field"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "toggles password visibility without changing its value and restores markup"
+          ],
+          "scope": "Visibility toggle preserves value and cleanup restores authored markup.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "keeps password visibility and clear-search actions accessible and resettable"
+          ],
+          "scope": "Password visibility and search clearing have accessible actions and reset correctly.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/password-field"
+    },
+    {
+      "id": "search-field",
+      "name": "SearchField",
+      "labelAr": "حقل بحث",
+      "category": "forms",
+      "description": "Native search input with a label and application-owned query handling.",
+      "cssClasses": [
+        "nq-search-field"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps range handles ordered and resets custom controls with an external form"
+          ],
+          "scope": "Range ordering and external-form reset/value association for range, search, and multiple toggles are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "keeps password visibility and clear-search actions accessible and resettable"
+          ],
+          "scope": "Password visibility and search clearing have accessible actions and reset correctly.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/search-field"
+    },
+    {
+      "id": "number-field",
+      "name": "NumberField",
+      "labelAr": "حقل رقمي",
+      "category": "forms",
+      "description": "Numeric quantity entry using native min, max, step, and empty-value semantics.",
+      "cssClasses": [
+        "nq-number-field"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "normalizes pasted PIN digits, preserves empty numbers, and resets actual form values"
+          ],
+          "scope": "PIN digit normalization, empty numeric values, submitted values, and form defaults on reset are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "normalizes pasted Arabic digits and resets numeric, pin and array CVAs through ngForm"
+          ],
+          "scope": "Arabic PIN digits, empty numbers, tag/PIN form reset, and disabled CVA propagation are checked through ngForm.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Use text inputs for identifiers, IBANs, and values whose exact string representation must be preserved."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/number-field"
+    },
+    {
+      "id": "slider",
+      "name": "Slider",
+      "labelAr": "شريط تمرير",
+      "category": "forms",
+      "description": "One labelled native range input for a bounded numeric value.",
+      "cssClasses": [
+        "nq-slider"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/slider"
+    },
+    {
+      "id": "range-slider",
+      "name": "RangeSlider",
+      "labelAr": "نطاق رقمي",
+      "category": "forms",
+      "description": "Two labelled native range inputs with ordered lower and upper values.",
+      "cssClasses": [
+        "nq-range-slider"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "clamps only the moved range thumb, resets, and restores narrower overridden bounds"
+          ],
+          "scope": "Moved range thumb is clamped; reset and overridden-bound cleanup are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps range handles ordered and resets custom controls with an external form"
+          ],
+          "scope": "Range ordering and external-form reset/value association for range, search, and multiple toggles are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "prevents crossed range bounds and preserves submitted readonly values"
+          ],
+          "scope": "Crossed bounds are constrained and readonly values remain submitted.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "constrains crossing range thumbs and submits distinct named values"
+          ],
+          "scope": "Crossed thumbs are constrained and two named values are submitted.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/range-slider"
+    },
+    {
+      "id": "rating",
+      "name": "Rating",
+      "labelAr": "تقييم",
+      "category": "forms",
+      "description": "A labelled native radio group for a discrete rating.",
+      "cssClasses": [
+        "nq-rating"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/rating"
+    },
+    {
+      "id": "pin-input",
+      "name": "PinInput",
+      "labelAr": "رمز التحقق",
+      "category": "forms",
+      "description": "One accessible code input with paste and Arabic-digit normalization.",
+      "cssClasses": [
+        "nq-pin-input"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "normalizes PIN paste/input, preserves one input, and ignores composition keys"
+          ],
+          "scope": "One input normalizes Arabic-digit input/paste and preserves composition-key behavior.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "normalizes Arabic PIN digits in one native input and honors canceled and native resets"
+          ],
+          "scope": "Single input, Arabic-digit normalization, form values, and cancelled/native resets are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "normalizes pasted PIN digits, preserves empty numbers, and resets actual form values"
+          ],
+          "scope": "PIN digit normalization, empty numeric values, submitted values, and form defaults on reset are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "normalizes pasted Arabic digits and resets numeric, pin and array CVAs through ngForm"
+          ],
+          "scope": "Arabic PIN digits, empty numbers, tag/PIN form reset, and disabled CVA propagation are checked through ngForm.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "One focus stop; code validation, expiry, attempts, and authentication are application/server concerns."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/pin-input"
+    },
+    {
+      "id": "tag-input",
+      "name": "TagInput",
+      "labelAr": "إدخال الوسوم",
+      "category": "forms",
+      "description": "Editable text tags with repeated native form values.",
+      "cssClasses": [
+        "nq-tag-input"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "commits/removes unique tags, submits repeated values, validates required selection and resets"
+          ],
+          "scope": "Unique tags, repeated form values, required validity, and native reset are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps tag and multiple-option form values explicit across filtering and reset"
+          ],
+          "scope": "Tag and checkbox repeated values persist across filtering and restore on reset.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "adds unique tags and keeps required selection validity separate from typed draft"
+          ],
+          "scope": "Unique tag commits and required selection validity are distinguished from an uncommitted draft.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "normalizes pasted Arabic digits and resets numeric, pin and array CVAs through ngForm"
+          ],
+          "scope": "Arabic PIN digits, empty numbers, tag/PIN form reset, and disabled CVA propagation are checked through ngForm.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/tag-input"
+    },
+    {
+      "id": "multi-select",
+      "name": "MultiSelect",
+      "labelAr": "اختيار متعدد",
+      "category": "forms",
+      "description": "Searchable checkbox list preserving multiple selected form values.",
+      "cssClasses": [
+        "nq-multi-select"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "filters checkbox options without losing selected native form values"
+          ],
+          "scope": "Filtering preserves selected native checkbox form values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps tag and multiple-option form values explicit across filtering and reset"
+          ],
+          "scope": "Tag and checkbox repeated values persist across filtering and restore on reset.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "searches normalized multiselect labels, submits repeated values and honors readonly"
+          ],
+          "scope": "Normalized search, repeated selected values, and readonly behavior are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "keeps multi-select values in FormData while filtering and enforces required selection"
+          ],
+          "scope": "Filtering preserves repeated selected values and required selection validity.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Uses native checkboxes; it is not an ARIA single-select combobox."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/multi-select"
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar",
+      "labelAr": "تقويم",
+      "category": "forms",
+      "description": "Keyboard date grid with Gregorian or table-backed Umm al-Qura display.",
+      "cssClasses": [
+        "nq-calendar"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/calendar.test.ts",
+          "tests": [
+            "navigates RTL weeks, skips disabled dates, submits ISO and resets to the original value",
+            "switches display calendars without changing selected ISO and has accurate reference day labels",
+            "keeps unsupported boundary cells blank, blocks crossing bounds, and respects readonly"
+          ],
+          "scope": "RTL date navigation, disabled dates, ISO submission/reset, calendar switching, reference labels, range edges, and readonly behavior are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "navigates calendar dates in RTL, skips disabled days, and uses Hijri month arithmetic",
+            "recenters externally updated calendar selection while respecting an explicit month",
+            "stops Hijri month and keyboard navigation at the authoritative table boundaries"
+          ],
+          "scope": "RTL disabled-day navigation, Hijri month arithmetic, external selection/month policy, and table-boundary navigation are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "navigates a leap day in RTL and enforces min/max without handwritten calendar arithmetic",
+            "guards Saudi table boundaries and uses table-backed accessible Hijri dates"
+          ],
+          "scope": "Leap-day RTL navigation, bounds, reference labels, and table-edge keyboard limits are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "navigates calendar dates in RTL, clamps at min/max, and switches display calendar without changing ISO selection",
+            "bounds Saudi calendar keyboard navigation and labels historical dates from the Saudi table",
+            "keeps calendar month arrows within min/max months"
+          ],
+          "scope": "RTL bounded date navigation, calendar switching, table-backed labels, and month-arrow limits are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/calendar.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/calendar.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/calendar.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Values/min/max are Gregorian ISO YYYY-MM-DD. See docs/date-calendars.md for pinned reference, supported range, and official-source limitations."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/calendar"
+    },
+    {
+      "id": "date-picker",
+      "name": "DatePicker",
+      "labelAr": "اختيار تاريخ",
+      "category": "forms",
+      "description": "Date-only input and labelled calendar dialog with ISO Gregorian values.",
+      "cssClasses": [
+        "nq-date-picker"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/calendar.test.ts",
+          "tests": [
+            "switches inside the open native modal, commits ISO, restores focus and cleans up",
+            "does not silently convert or clear an unsupported selection on switching to Hijri",
+            "enhances nested picker calendar only once and preserves native typed input on reopening",
+            "reports native edits once and closes when confirming the already selected date"
+          ],
+          "scope": "Modal calendar switching/commit/focus cleanup, unsupported ISO preservation, single nested enhancement, typed-value reopening, and single change reporting are checked in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "switches picker calendar systems without changing the ISO date and reopens at the selected month",
+            "preserves an unsupported ISO date while explicitly limiting its Hijri display",
+            "rejects unsupported Hijri form submission and keeps application bounds after calendar changes"
+          ],
+          "scope": "Calendar switching preserves ISO values, reopening recenters selection, unsupported dates remain visible but invalid, and form/application bounds recover in Gregorian mode; modal methods are simulated.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "switches Gregorian and Saudi Umm al-Qura while preserving ISO selection and reopens its month",
+            "guards Saudi table boundaries and uses table-backed accessible Hijri dates"
+          ],
+          "scope": "Switching retains ISO selection and reopens its month; unsupported Hijri values stay present with native custom validity.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "semantics-and-behavior",
+          "source": "packages/vue/test/datepicker-policy.test.ts",
+          "tests": [
+            "restores a rejected calendar selection and applies an accepted selection to both selector and grid",
+            "associates unsupported-date errors and clears them when switching back without rewriting ISO"
+          ],
+          "scope": "Controlled calendar acceptance/rejection stays consistent with grid and ISO values; linked unsupported-date errors clear on Gregorian recovery.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "preserves selected ISO date when switching DatePicker calendars and reopens on that selected month",
+            "invalidates unsupported Hijri dates without rewriting ISO values and restores native validity in Gregorian mode",
+            "updates reactive-form calendar validation on switching, value writes, disable and reset",
+            "exposes unsupported calendar errors through ngModel and respects disabled fieldsets"
+          ],
+          "scope": "ISO-preserving switching/reopening, native validity, reactive-form and ngModel validation, disabled/write/reset propagation, and disabled-fieldset behavior are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-behavior",
+          "source": "tests/browser/expansion.spec.ts",
+          "tests": [
+            "native date picker switches reference calendars without changing the ISO day"
+          ],
+          "scope": "Chromium modal switching preserves ISO dates and reference day labels; Escape restores trigger focus; unsupported date validity recovers in Gregorian mode.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "semantics-and-behavior",
+          "source": "packages/vanilla/test/calendar.test.ts",
+          "tests": [
+            "updates the associated date display on typing, blank values and native form reset"
+          ],
+          "scope": "Canonical selected-date display follows typed input and native reset and hides for an empty value.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "semantics-and-behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "shows and associates the selected calendar date outside the closed picker dialog"
+          ],
+          "scope": "Closed-picker output uses canonical formatting, input/output and hint associations, and polite announcements; switching preserves ISO, and blank/unsupported values hide the display.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "semantics-and-behavior",
+          "source": "packages/vue/test/datepicker-policy.test.ts",
+          "tests": [
+            "shows the canonical selected calendar below the closed field and preserves its description associations"
+          ],
+          "scope": "Closed-picker canonical output retains input/hint associations, updates on calendar switching without rewriting ISO, and hides for blank/unsupported values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "semantics-and-behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "shows an associated canonical selected date below the closed picker field"
+          ],
+          "scope": "Closed-picker canonical output retains input/hint associations, updates on calendar switching without rewriting ISO, and hides for blank/unsupported values.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/calendar.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/calendar.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/calendar.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Native date input presentation is browser-owned; the calendar display mode does not change the ISO stored day. See docs/date-calendars.md."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/date-picker"
+    },
+    {
+      "id": "file-dropzone",
+      "name": "FileDropzone",
+      "labelAr": "إفلات الملفات",
+      "category": "forms",
+      "description": "Native local-file selection and drop feedback with selection constraints.",
+      "cssClasses": [
+        "nq-file-dropzone"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "rejects oversized or mismatched dropped files without pretending to upload them"
+          ],
+          "scope": "Rejected size/type drops do not become successful selected files; no upload service is exercised.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "rejects invalid dropped files instead of retaining them as successful form controls"
+          ],
+          "scope": "Invalid dropped files are excluded from successful form controls.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-controls.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/controls.ts"
+        ],
+        "angular": [
+          "packages/angular/src/advanced-controls.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/controls.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Local selection is not upload transport; application code owns storage, server validation, and authoritative progress."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/file-dropzone"
+    },
+    {
+      "id": "toggle-group",
+      "name": "ToggleGroup",
+      "labelAr": "مجموعة تبديل",
+      "category": "actions",
+      "description": "Single native radio selection or multiple pressed-button choices.",
+      "cssClasses": [
+        "nq-toggle-group"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "uses native radio changes, skips disabled choices, resets and restores checked state",
+            "supports multiple pressed values and repeated form entries without submitting buttons"
+          ],
+          "scope": "Single radio changes/disabled/reset and multiple pressed values/repeated form entries are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps range handles ordered and resets custom controls with an external form"
+          ],
+          "scope": "Range ordering and external-form reset/value association for range, search, and multiple toggles are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "submits repeated multiple-toggle values and restores their form defaults"
+          ],
+          "scope": "Multiple toggles submit repeated values and restore defaults on reset.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/toggle-group"
+    },
+    {
+      "id": "popover",
+      "name": "Popover",
+      "labelAr": "نافذة منبثقة",
+      "category": "navigation",
+      "description": "Labelled disclosure region with outside-press and Escape dismissal.",
+      "cssClasses": [
+        "nq-popover"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "closes a popover on outside press without stealing focus and returns focus on Escape"
+          ],
+          "scope": "Outside dismissal preserves external focus; Escape returns focus to the trigger.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "closes popovers outside and with Escape without trapping ordinary Tab order"
+          ],
+          "scope": "Escape and outside dismissal are checked with focus return and ordinary child controls.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "moves menu focus past disabled items and returns focus on Escape; popovers close outside"
+          ],
+          "scope": "Menu skips disabled items and returns focus on Escape; popover outside dismissal is checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/disclosures.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Interactive children use normal Tab navigation; use Menu for action-menu keyboard semantics."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/popover"
+    },
+    {
+      "id": "menu",
+      "name": "Menu",
+      "labelAr": "قائمة إجراءات",
+      "category": "navigation",
+      "description": "Action menu with roving keyboard focus and return to its trigger.",
+      "cssClasses": [
+        "nq-menu"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "navigates menu enabled items, activates with keyboard and removes typeahead timers"
+          ],
+          "scope": "Enabled-item keyboard activation and typeahead timer cleanup are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "supports menu roving focus, disabled skipping, actions and focus return"
+          ],
+          "scope": "Roving focus skips disabled items, emits the selected action, and returns focus.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "moves menu focus past disabled items and returns focus on Escape; popovers close outside"
+          ],
+          "scope": "Menu skips disabled items and returns focus on Escape; popover outside dismissal is checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "skips disabled menu items, invokes an action, and returns focus"
+          ],
+          "scope": "Disabled-item skipping, action emission, and focus return are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/disclosures.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/menu"
+    },
+    {
+      "id": "drawer",
+      "name": "Drawer",
+      "labelAr": "لوحة جانبية",
+      "category": "navigation",
+      "description": "Native modal dialog presented from a logical side or the bottom.",
+      "cssClasses": [
+        "nq-drawer"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "uses native drawer lifecycle and caller-owned toast dismissal"
+          ],
+          "scope": "Drawer native-method/cancel/focus lifecycle and caller-owned polite/urgent toast dismissal are checked in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/disclosures.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/drawer"
+    },
+    {
+      "id": "toast-region",
+      "name": "ToastRegion",
+      "labelAr": "إشعارات فورية",
+      "category": "feedback",
+      "description": "Caller-owned live notifications with explicit dismissal.",
+      "cssClasses": [
+        "nq-toast-region"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/controls.test.ts",
+          "tests": [
+            "dismisses caller-owned toast messages, focuses the next action and restores on cleanup"
+          ],
+          "scope": "Dismissal, focus movement, and authored-state cleanup are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "keeps toasts caller owned, with only urgent messages in the assertive region"
+          ],
+          "scope": "Polite/urgent separation and caller-owned dismiss events are checked without removing caller messages.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "uses native drawer lifecycle and caller-owned toast dismissal"
+          ],
+          "scope": "Drawer native-method/cancel/focus lifecycle and caller-owned polite/urgent toast dismissal are checked in a simulated DOM.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/disclosures.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "No automatic expiry by default. Reserve assertive announcements for urgent content."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/toast-region"
+    },
+    {
+      "id": "collapsible",
+      "name": "Collapsible",
+      "labelAr": "قسم قابل للطي",
+      "category": "content",
+      "description": "Native details and summary disclosure.",
+      "cssClasses": [
+        "nq-collapsible"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/collapsible"
+    },
+    {
+      "id": "tree-view",
+      "name": "TreeView",
+      "labelAr": "عرض شجري",
+      "category": "navigation",
+      "description": "Hierarchical selection with visible-node navigation and RTL expansion.",
+      "cssClasses": [
+        "nq-tree-view"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "expands in RTL, skips disabled nodes, selects by keyboard, and restores the DOM",
+            "supports visible-node typeahead and leaves modified shortcuts alone",
+            "rejects duplicate item values without partially modifying markup"
+          ],
+          "scope": "RTL tree expansion, disabled skipping, selection, typeahead, modified shortcuts, duplicate validation, and cleanup are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "expands a flattened RTL tree and selects with keyboard"
+          ],
+          "scope": "RTL expansion, disabled-child skipping, keyboard selection, and parent focus return are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "expands a tree with RTL arrows and selects a visible child"
+          ],
+          "scope": "RTL expansion, visible enabled-child selection, and parent navigation are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "expands RTL trees, skips disabled children and supports keyboard selection"
+          ],
+          "scope": "RTL expansion, disabled-child skipping, and keyboard selection are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "No drag-and-drop or virtualization claim."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/tree-view"
+    },
+    {
+      "id": "carousel",
+      "name": "Carousel",
+      "labelAr": "عارض شرائح",
+      "category": "content",
+      "description": "Manual slide navigation and current-position status.",
+      "cssClasses": [
+        "nq-carousel"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "bounds navigation, announces position, and preserves slide content and authored state"
+          ],
+          "scope": "Bounded manual navigation, status, preserved content, and cleanup are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "emits configurable platform actions and carousel movement without backend claims"
+          ],
+          "scope": "Feedback and rejection events, consent visibility, and carousel position changes are checked without backend claims.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-interactive.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/expansion-interactive.ts"
+        ],
+        "angular": [
+          "packages/angular/src/interactions.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "No autoplay by default."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/carousel"
+    },
+    {
+      "id": "link",
+      "name": "Link",
+      "labelAr": "رابط",
+      "category": "actions",
+      "description": "Native navigation anchor with optional external-link attributes.",
+      "cssClasses": [
+        "nq-link"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/link"
+    },
+    {
+      "id": "icon-button",
+      "name": "IconButton",
+      "labelAr": "زر أيقونة",
+      "category": "actions",
+      "description": "Native action button with an explicit accessible name.",
+      "cssClasses": [
+        "nq-icon-button"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/icon-button"
+    },
+    {
+      "id": "button-group",
+      "name": "ButtonGroup",
+      "labelAr": "مجموعة أزرار",
+      "category": "actions",
+      "description": "Labelled grouping and shared layout for related actions.",
+      "cssClasses": [
+        "nq-button-group"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/button-group"
+    },
+    {
+      "id": "chip",
+      "name": "Chip",
+      "labelAr": "وسم",
+      "category": "content",
+      "description": "Compact labelled content with an optional application-owned remove action.",
+      "cssClasses": [
+        "nq-chip"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/chip"
+    },
+    {
+      "id": "description-list",
+      "name": "DescriptionList",
+      "labelAr": "قائمة وصفية",
+      "category": "content",
+      "description": "Semantic terms and descriptions for structured metadata.",
+      "cssClasses": [
+        "nq-description-list"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/description-list"
+    },
+    {
+      "id": "stat",
+      "name": "Stat",
+      "labelAr": "إحصائية",
+      "category": "content",
+      "description": "A labelled value with optional supporting context.",
+      "cssClasses": [
+        "nq-stat"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/stat"
+    },
+    {
+      "id": "timeline",
+      "name": "Timeline",
+      "labelAr": "خط زمني",
+      "category": "content",
+      "description": "Ordered events or stages with optional dates and state.",
+      "cssClasses": [
+        "nq-timeline"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/timeline"
+    },
+    {
+      "id": "meter",
+      "name": "Meter",
+      "labelAr": "مقياس",
+      "category": "feedback",
+      "description": "Native scalar measurement with a label and domain bounds.",
+      "cssClasses": [
+        "nq-meter"
+      ],
+      "interaction": "native",
+      "sourceType": "native",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/meter"
+    },
+    {
+      "id": "avatar-group",
+      "name": "AvatarGroup",
+      "labelAr": "مجموعة صور رمزية",
+      "category": "content",
+      "description": "Grouped avatars with a labelled overflow count.",
+      "cssClasses": [
+        "nq-avatar-group"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/avatar-group"
+    },
+    {
+      "id": "data-table",
+      "name": "DataTable",
+      "labelAr": "جدول بيانات",
+      "category": "content",
+      "description": "Semantic table with stable localized sorting and aria-sort headers.",
+      "cssClasses": [
+        "nq-data-table"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "sorts native row nodes numerically and stably, exposes aria-sort, and restores original order"
+          ],
+          "scope": "Stable numeric sorting, aria-sort, original-node preservation, and cleanup ordering are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "sorts a native data table stably and exposes direction on headers"
+          ],
+          "scope": "Stable ascending/descending sorting and aria-sort headers are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "sorts numeric rows stably without mutating the caller and exposes aria-sort"
+          ],
+          "scope": "Stable numeric sorting and aria-sort are checked without mutating caller rows.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "behavior",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "sorts data stably with aria-sort and emits responsive CSS variables"
+          ],
+          "scope": "Sort direction, localized/numeric order, and nonmutation of caller rows are checked.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/content.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Sorting only: virtualization, cell editing, remote data, and advanced grid selection require application integrations."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/data-table"
+    },
+    {
+      "id": "service-card",
+      "name": "ServiceCard",
+      "labelAr": "بطاقة خدمة",
+      "category": "platforms",
+      "description": "Service summary, metadata, and application-owned next action.",
+      "cssClasses": [
+        "nq-service-card"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "No official identity, endorsement, or government-service connection is implied."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/service-card"
+    },
+    {
+      "id": "service-details",
+      "name": "ServiceDetails",
+      "labelAr": "تفاصيل الخدمة",
+      "category": "platforms",
+      "description": "Service description, requirements, metadata, and action composition.",
+      "cssClasses": [
+        "nq-service-details"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Requirements and actions are application-owned content."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/service-details"
+    },
+    {
+      "id": "portal-header",
+      "name": "PortalHeader",
+      "labelAr": "ترويسة المنصة",
+      "category": "platforms",
+      "description": "Configurable product identity, navigation, and actions.",
+      "cssClasses": [
+        "nq-portal-header"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Use the product identity; do not invent a government digital stamp or certification."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/portal-header"
+    },
+    {
+      "id": "portal-footer",
+      "name": "PortalFooter",
+      "labelAr": "تذييل المنصة",
+      "category": "platforms",
+      "description": "Configurable footer navigation and supporting information.",
+      "cssClasses": [
+        "nq-portal-footer"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/portal-footer"
+    },
+    {
+      "id": "feedback",
+      "name": "Feedback",
+      "labelAr": "تقييم الصفحة",
+      "category": "platforms",
+      "description": "Page usefulness selection and acknowledgement UI.",
+      "cssClasses": [
+        "nq-feedback"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "announces feedback once, submits its hidden value, and restores authored status on cleanup"
+          ],
+          "scope": "Feedback emits/submits its hidden value and restores authored status on cleanup.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "reports configurable consent and feedback without implied persistence or network requests"
+          ],
+          "scope": "Configured consent and feedback emit application events and update local acknowledgement; no backend service is implied.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "emits configurable platform actions and carousel movement without backend claims"
+          ],
+          "scope": "Feedback and rejection events, consent visibility, and carousel position changes are checked without backend claims.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Recording feedback on a server requires an application integration."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/feedback"
+    },
+    {
+      "id": "cookie-consent",
+      "name": "CookieConsent",
+      "labelAr": "تفضيلات الخصوصية",
+      "category": "platforms",
+      "description": "Preference choice UI with application-owned policy and script gating.",
+      "cssClasses": [
+        "nq-cookie-consent"
+      ],
+      "interaction": "interactive",
+      "sourceType": "interactive",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "behavior",
+          "source": "packages/vanilla/test/content.test.ts",
+          "tests": [
+            "persists only with an explicit storage key and restores visibility on cleanup",
+            "still emits a choice when the browser denies persistence"
+          ],
+          "scope": "Persistence is opt-in by storage key, cleanup restores visibility, and denied storage does not suppress choice events.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "react",
+          "kind": "behavior",
+          "source": "packages/react/react.expansion.test.tsx",
+          "tests": [
+            "reports configurable consent and feedback without implied persistence or network requests"
+          ],
+          "scope": "Configured consent and feedback emit application events and update local acknowledgement; no backend service is implied.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "behavior",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "emits configurable platform actions and carousel movement without backend claims"
+          ],
+          "scope": "Feedback and rejection events, consent visibility, and carousel position changes are checked without backend claims.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/src/content.ts",
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Preference UI does not gate scripts. Persistence and policy/version handling must be explicitly configured by the application."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/cookie-consent"
+    },
+    {
+      "id": "notification-list",
+      "name": "NotificationList",
+      "labelAr": "قائمة إشعارات",
+      "category": "platforms",
+      "description": "Application-owned notification content and dismissal actions.",
+      "cssClasses": [
+        "nq-notification-list"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-content.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/patterns.ts"
+        ],
+        "angular": [
+          "packages/angular/src/content.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/components.css"
+        ]
+      },
+      "notes": [
+        "Data and actions belong to the application; the vanilla recipe needs application listeners for custom actions."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/notification-list"
+    },
+    {
+      "id": "container",
+      "name": "Container",
+      "labelAr": "حاوية",
+      "category": "layout",
+      "description": "Constrain content width with responsive spacing.",
+      "cssClasses": [
+        "nq-container"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/container"
+    },
+    {
+      "id": "stack",
+      "name": "Stack",
+      "labelAr": "ترتيب عمودي",
+      "category": "layout",
+      "description": "Arrange children vertically with shared spacing and alignment.",
+      "cssClasses": [
+        "nq-stack"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vue"
+      ],
+      "evidence": [
+        {
+          "adapter": "vue",
+          "kind": "layout-contract",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "renders responsive layout variables on the server without viewport globals"
+          ],
+          "scope": "Grid responsive column/gap variables and Stack semantic section output are asserted during server rendering.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/stack"
+    },
+    {
+      "id": "inline",
+      "name": "Inline",
+      "labelAr": "ترتيب أفقي",
+      "category": "layout",
+      "description": "Arrange children horizontally with optional wrapping.",
+      "cssClasses": [
+        "nq-inline"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/inline"
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "labelAr": "شبكة",
+      "category": "layout",
+      "description": "Responsive CSS grid with column and minimum-item sizing.",
+      "cssClasses": [
+        "nq-grid"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "evidence": [
+        {
+          "adapter": "react",
+          "kind": "layout-contract",
+          "source": "packages/react/react.expansion.ssr.test.tsx",
+          "tests": [
+            "serializes layout variables without leaking presentation props onto HTML"
+          ],
+          "scope": "Responsive grid/spacing/alignment variables serialize without leaking layout props as HTML attributes.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vue",
+          "kind": "layout-contract",
+          "source": "packages/vue/test/expansion.test.ts",
+          "tests": [
+            "renders responsive layout variables on the server without viewport globals"
+          ],
+          "scope": "Grid responsive column/gap variables and Stack semantic section output are asserted during server rendering.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "angular",
+          "kind": "layout-contract",
+          "source": "packages/angular/test/expansion.test.ts",
+          "tests": [
+            "sorts data stably with aria-sort and emits responsive CSS variables"
+          ],
+          "scope": "Responsive column and spacing CSS variables are asserted on the grid element.",
+          "command": "pnpm test",
+          "result": "passed",
+          "date": "2026-10-28"
+        },
+        {
+          "adapter": "vanilla",
+          "kind": "browser-layout-contract",
+          "source": "tests/browser/expansion.spec.ts",
+          "tests": [
+            "layout studio edits real responsive CSS and survives Arabic switching"
+          ],
+          "scope": "The studio changes computed grid columns at 1280/390 px, preserves input state on Arabic switching, and renders the sidebar without page overflow.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/grid"
+    },
+    {
+      "id": "columns",
+      "name": "Columns",
+      "labelAr": "أعمدة",
+      "category": "layout",
+      "description": "Responsive equal-column composition.",
+      "cssClasses": [
+        "nq-columns"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/columns"
+    },
+    {
+      "id": "sidebar",
+      "name": "Sidebar",
+      "labelAr": "تخطيط جانبي",
+      "category": "layout",
+      "description": "Logical-side secondary content with a CSS collapse breakpoint.",
+      "cssClasses": [
+        "nq-sidebar"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [
+        "vanilla"
+      ],
+      "evidence": [
+        {
+          "adapter": "vanilla",
+          "kind": "browser-layout-contract",
+          "source": "tests/browser/expansion.spec.ts",
+          "tests": [
+            "layout studio edits real responsive CSS and survives Arabic switching"
+          ],
+          "scope": "The studio changes computed grid columns at 1280/390 px, preserves input state on Arabic switching, and renders the sidebar without page overflow.",
+          "command": "pnpm test:browser",
+          "result": "passed",
+          "date": "2026-10-28"
+        }
+      ],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/sidebar"
+    },
+    {
+      "id": "center",
+      "name": "Center",
+      "labelAr": "توسيط",
+      "category": "layout",
+      "description": "Center content within a composition.",
+      "cssClasses": [
+        "nq-center"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/center"
+    },
+    {
+      "id": "spacer",
+      "name": "Spacer",
+      "labelAr": "مساحة مرنة",
+      "category": "layout",
+      "description": "Flexible decorative spacing within a layout.",
+      "cssClasses": [
+        "nq-spacer"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/spacer"
+    },
+    {
+      "id": "aspect-ratio",
+      "name": "AspectRatio",
+      "labelAr": "نسبة العرض",
+      "category": "layout",
+      "description": "Preserve a requested width-to-height ratio.",
+      "cssClasses": [
+        "nq-aspect-ratio"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/aspect-ratio"
+    },
+    {
+      "id": "section",
+      "name": "Section",
+      "labelAr": "قسم",
+      "category": "layout",
+      "description": "Semantic section with shared layout spacing.",
+      "cssClasses": [
+        "nq-section"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/section"
+    },
+    {
+      "id": "app-shell",
+      "name": "AppShell",
+      "labelAr": "هيكل التطبيق",
+      "category": "layout",
+      "description": "Compose application header, main, sidebar, and footer regions.",
+      "cssClasses": [
+        "nq-app-shell"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [
+        "Give the main region a stable unique identifier and provide an appropriate skip link in the application."
+      ],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/app-shell"
+    },
+    {
+      "id": "page-header",
+      "name": "PageHeader",
+      "labelAr": "عنوان الصفحة",
+      "category": "layout",
+      "description": "Page title, description, breadcrumb, and actions.",
+      "cssClasses": [
+        "nq-page-header"
+      ],
+      "interaction": "static",
+      "sourceType": "static",
+      "planned": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "built": [
+        "vanilla",
+        "react",
+        "vue",
+        "angular"
+      ],
+      "verified": [],
+      "evidence": [],
+      "implementationSources": {
+        "react": [
+          "packages/react/src/expanded-layout.tsx"
+        ],
+        "vue": [
+          "packages/vue/src/layout.ts"
+        ],
+        "angular": [
+          "packages/angular/src/layouts.ts"
+        ],
+        "vanilla": [
+          "packages/vanilla/EXPANSION-API.md",
+          "packages/styles/src/layout.css"
+        ]
+      },
+      "notes": [],
+      "documentation": "https://mohamedembarak.github.io/nasaq/#component/page-header"
+    }
+  ],
+  "limitations": [
+    "Public source preview; npm packages are not published. No official DGA certification.",
+    "The 77-entry scope is finite and independently designed; exact parity with the current official DGA catalog has not been established.",
+    "Combobox is local and single-select. MultiSelect is a separate searchable checkbox list; async data and virtualization are application concerns.",
+    "DataTable provides stable localized sorting, not virtualization or cell editing.",
+    "FileUpload and FileDropzone select local files; application code owns transport, storage, and server validation.",
+    "Calendar/DatePicker use Gregorian ISO date-only values and Gregorian/Umm al-Qura display. Pinned reference data, supported range, and official-source limits are documented in docs/date-calendars.md. General Intl formatDate is not the canonical converter for persisted dual-calendar records.",
+    "Phone, IBAN, identity, and address recipes collect data; they do not verify identity, ownership, or government-service access.",
+    "Maps, charts, editors, PDF, CAPTCHA, authentication, and payments are integration recipes, not bundled engines or connected services.",
+    "Headless behavior is project-owned; there is no Zag dependency.",
+    "Angular builds as an APF library; the Vite JIT example does not establish production AOT, SSR, or hydration coverage.",
+    "Demo journeys use fictional data and simulated submission/request tracking."
+  ],
+  "verificationSnapshot": {
+    "date": "2026-10-28",
+    "node": "24.19.0",
+    "pnpm": "11.25.0",
+    "browser": "Chromium on Linux",
+    "record": "docs/validation.md",
+    "unitTests": 139,
+    "unitTestFiles": 20,
+    "tokenContrastTests": 8,
+    "rootBrowserTests": 27,
+    "layoutConfigurations": 32,
+    "axeScans": 13,
+    "packagesBuilt": 7,
+    "viteApplicationsBuilt": 4,
+    "isolatedTarballConsumers": "passed",
+    "renderingEvidence": [
+      {
+        "adapter": "react",
+        "source": "packages/react/react.ssr.test.tsx",
+        "scope": "Server renders all 27 catalog entries without browser globals; not a hydration or full behavior audit."
+      },
+      {
+        "adapter": "vue",
+        "source": "packages/vue/test/ssr.test.ts",
+        "scope": "Server renders Field/TextField, Combobox, Tabs, and Dialog with linked unique IDs; not a hydration audit."
+      },
+      {
+        "adapter": "vanilla",
+        "source": "packages/vanilla/test/ssr.test.ts",
+        "scope": "Core and vanilla imports without browser globals; default enhancement is inert."
+      },
+      {
+        "adapter": "angular",
+        "source": "scripts/check-packages.mjs",
+        "scope": "APF import in isolated consumer with compiler loaded; not production Angular AOT, SSR, or hydration evidence."
+      },
+      {
+        "adapter": "react",
+        "source": "packages/react/react.hydration.test.tsx",
+        "scope": "Focused SSR-to-hydration case: stable accessible IDs, original server DOM retained, no mismatch warnings, and post-hydration RTL Tabs/Combobox interaction; Field/TextField and a closed Dialog included. Simulated DOM only."
+      },
+      {
+        "adapter": "vue",
+        "source": "packages/vue/test/hydration.test.ts",
+        "scope": "Focused SSR-to-hydration case: stable accessible IDs, original server DOM retained, no mismatch warnings, and post-hydration RTL Tabs/Combobox interaction; Field/TextField and a closed Dialog included. Simulated DOM only."
+      },
+      {
+        "adapter": "react",
+        "source": "packages/react/react.expansion.ssr.test.tsx",
+        "scope": "All 50 additions server-render without browser globals or implicit specialist engines; together with the initial SSR test this covers 77 entries in the supplied initial states, not hydration or every interaction."
+      }
+    ],
+    "limitations": [
+      "Chromium only; Firefox and WebKit not covered.",
+      "Manual screen-reader testing and complete accessibility audit not performed.",
+      "Full theme, density, mode, locale, framework-version, and hydration matrices not established.",
+      "No official DGA certification or endorsement."
+    ],
+    "bundleChecks": [
+      {
+        "entry": "React Button",
+        "gzipBytes": 380,
+        "budgetBytes": 4096
+      },
+      {
+        "entry": "Vanilla createTabs",
+        "gzipBytes": 2054,
+        "budgetBytes": 6144
+      }
+    ],
+    "bundleScope": "Minimal-import minified JavaScript from isolated tarball consumer; framework runtime, CSS, tokens, fonts, images, and application code excluded. Configured unrelated-widget marker guards passed.",
+    "scope": "Expanded 77-entry snapshot; per-component evidence is limited to named assertions. Separate suite-level rendering and browser checks do not establish all variant/adapter combinations.",
+    "rootBrowserRun": "Fresh combined root run passed: 17 original and 10 expansion tests in Chromium.",
+    "unitTestsByPackage": {
+      "core": 17,
+      "vanilla": 41,
+      "react": 34,
+      "vue": 28,
+      "angular": 19
+    },
+    "additionalMobileRouteConfigurations": 4,
+    "frameworkCalendarScans": 3,
+    "calendarOracleDays": 55991,
+    "viteApplicationsBuiltScope": "Fresh full build passed: seven packages, vanilla playground and React/Vue/Angular Vite examples, including playground TypeScript checking.",
+    "packageConsumerScope": "Seven fresh isolated tarballs: ESM, canonical calendar conversion, React/Vue Button and DatePicker/Grid SSR, Angular APF import, split CSS and bundled wordmark/GIF asset exports, consumer types, bundled calendar-data MIT license, and two minimal-import bundle budgets.",
+    "frameworkCalendarBrowser": {
+      "source": "tests/browser/framework-calendars.mjs",
+      "command": "node tests/browser/framework-calendars.mjs",
+      "adapters": [
+        "react",
+        "vue",
+        "angular"
+      ],
+      "result": "passed",
+      "scope": "Focused native modal/calendar switching, canonical labels, ISO-preserving selection, reopening, unsupported-date submission, responsive RTL/dark grid, and three scoped axe scans in Chromium; not full adapter behavior or hydration."
+    },
+    "brandBrowserEvidence": {
+      "source": "tests/browser/expansion.spec.ts",
+      "test": "brand loader switches to its static symbol for reduced motion without a logo font request",
+      "scope": "Arabic wordmark GIF loads at its expected source width; reduced-motion preference selects static SVG and no Aref Ruqaa font request is made. The legacy symbol filename contains Arabic-only artwork.",
+      "result": "passed"
+    }
+  },
+  "sourceTypeDefinitions": {
+    "native": "The main interaction uses browser-native semantics.",
+    "static": "Semantic composition or CSS layout; content and application actions are caller-owned.",
+    "interactive": "Nasaq adds state, keyboard behavior, or lifecycle management.",
+    "integration": "A documented application recipe for an external engine or service; not counted among the 77 components."
+  },
+  "scope": {
+    "components": 77,
+    "initialComponents": 27,
+    "addedComponents": 50,
+    "layoutComponents": 12,
+    "nativeInputTypeCount": 22,
+    "nativeInputTypes": [
+      "text",
+      "search",
+      "email",
+      "tel",
+      "url",
+      "password",
+      "number",
+      "range",
+      "date",
+      "month",
+      "week",
+      "time",
+      "datetime-local",
+      "color",
+      "checkbox",
+      "radio",
+      "file",
+      "hidden",
+      "button",
+      "submit",
+      "reset",
+      "image"
+    ],
+    "inputTypeReference": "https://html.spec.whatwg.org/multipage/input.html#states-of-the-type-attribute",
+    "inputRecipes": "docs/coverage.md",
+    "playgroundRoutes": {
+      "catalog": "#components",
+      "inputs": "#inputs",
+      "layouts": "#layouts"
+    },
+    "integrationRecipes": [
+      "maps",
+      "charts",
+      "rich-text-editor",
+      "code-editor",
+      "pdf-viewer",
+      "virtualized-or-editable-grid",
+      "file-transport",
+      "authentication",
+      "payments",
+      "captcha",
+      "consent-management"
+    ]
+  },
+  "expansionVerification": {
+    "status": "scoped-evidence-recorded",
+    "scope": "50 added entries have source/export coverage. Named passing unit/browser assertions are mapped only to directly checked components; unverified entries remain built without fabricated coverage.",
+    "record": "docs/validation.md",
+    "browser": "Chromium only",
+    "manualScreenReader": "not performed"
+  },
+  "license": "Apache-2.0",
+  "repository": "https://github.com/MohamedEmbarak/nasaq",
+  "guide": "https://mohamedembarak.github.io/nasaq/",
+  "documentationVerification": {
+    "date": "2026-10-28",
+    "result": "passed",
+    "source": "tests/browser/guide.spec.ts",
+    "command": "pnpm exec playwright test tests/browser/guide.spec.ts",
+    "tests": 3,
+    "scope": "77 individually addressable live references, meaningful usage/API/lifecycle/accessibility content, controller reset/remount, mobile RTL layout and scoped WCAG A/AA scan. Public guide content does not establish complete framework or component accessibility certification."
+  }
+}

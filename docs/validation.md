@@ -1,0 +1,138 @@
+# Validation record
+
+This record covers the Nasaq `0.1.0` library development snapshot checked on **2026-10-28**. It distinguishes source coverage, targeted behavior tests, package-consumer checks, and browser evidence. A passing check applies to its stated scope; it is not a declaration of complete accessibility, DGA compliance, or production certification.
+
+## Environment
+
+| Tool | Tested version or configuration |
+|---|---|
+| Node.js | `24.19.0` |
+| pnpm | `11.25.0`, pinned in the workspace |
+| TypeScript | Workspace TypeScript 6 toolchain |
+| React / React DOM | `19.3.1` |
+| Vue / server renderer | `3.5.44` |
+| Angular | `22.2.3`, library packaged through `ng-packagr` |
+| Browser | Chromium on Linux; browser tests use the configured executable |
+
+These exact versions were exercised. Declared peer ranges are broader than a single run and should not be read as a fully tested version matrix.
+
+## Recorded checks
+
+| Check | Result | Scope |
+|---|---|---|
+| `pnpm build:packages` | Passed | All seven packages, including Angular Package Format output |
+| `pnpm build` | Passed | Seven packages and four Vite application builds: vanilla playground, React, Vue, and Angular examples |
+| Playground TypeScript check | Passed | Run inside `pnpm build`; also available through `pnpm typecheck:playground` |
+| `pnpm test` | Passed | 8 token-contrast checks and 139 Vitest tests across 20 files, including calendar reference conversion and focused React/Vue hydration cases |
+| `pnpm test:browser` | Passed: 27 tests | 17 original and 10 expansion tests: vanilla journeys, selected component behavior, calendar switching, input/layout labs, responsive layout, wordmark-loader reduced motion, and scoped axe scans in Chromium |
+| `pnpm check:packages` | Passed | Seven local tarballs installed in an isolated consumer; ESM imports, canonical calendar conversion, React/Vue Button and DatePicker/Grid SSR, Angular APF import, split CSS and bundled wordmark/GIF asset exports, TypeScript consumers, calendar-data license, and two minimal-import bundle budgets |
+| React example browser suite | Passed: 2 tests | Conditional service application, modal review/focus, local request state, independent preferences, narrow Arabic layout, and selected axe scans |
+| Angular example browser script | Passed | Native form/Angular forms integration, Arabic combobox, conditional application, modal/Escape/focus, local request state, RTL, theme change, and mobile layout |
+| Vue example session browser check | Passed | Full local service flow and selected axe checks; this was a session check, not an additional committed browser suite |
+| Framework calendar browser script | Passed for React, Vue, and Angular | Calendar switching, canonical labels, keyboard selection, reopening, invalid-range submission, responsive RTL/dark layout, and scoped axe scans |
+| Browser-test TypeScript check | Passed | Root browser test source type checking |
+
+The public guide adds [three regression tests](../tests/browser/guide.spec.ts),
+bringing the root suite to 30 tests. Its focused run passed all three: setup
+navigation and all 77 live reference pages, controller interaction/reset/remount,
+and a 390px Arabic/RTL accessibility check. The 27 existing root tests also
+passed against the public source copy. The documentation-only code scroll and
+API table regions support keyboard focus, and the guide scan reports no scoped
+WCAG 2.2 A/AA violations. All 77 copyable usage snippets were additionally
+initialized and destroyed with the real vanilla enhancer in Chromium.
+
+The public-source package build, all four application builds, 139 unit tests,
+eight contrast checks and seven packed-consumer checks were rerun. Package
+archives include Apache-2.0 LICENSE and NOTICE files; fonts and calendar data
+retain their original notices. The guide is also built with the `/nasaq/` base
+path used by GitHub Pages.
+
+The package-consumer script packs files locally and performs no publication. Its Angular import check loads the compiler for the consumer smoke test; it is not a production Angular AOT application build.
+
+## Representative bundle checks
+
+The isolated tarball consumer builds two minimal ESM imports with Vite, minification, and gzip. Both passed their configured size budgets and output guards for unrelated widget markers:
+
+| Import | Measured JavaScript gzip | Budget |
+|---|---:|---:|
+| React `Button` | 380 bytes | 4,096 bytes |
+| Vanilla `createTabs` | 2,054 bytes | 6,144 bytes |
+
+The React build leaves React/React DOM external. These numbers exclude framework runtime, CSS, tokens, fonts, images, and application code; they are not complete download sizes or general performance guarantees. The output guards check the configured unrelated Dialog/Combobox/Tabs markers for the React import and Combobox/Tooltip markers for the vanilla import. Other components and combinations have not received individual budgets.
+
+## Unit and server-rendering scope
+
+| Area | Tests | Evidence |
+|---|---|---|
+| Core | 17 | Arabic search/digit normalization, navigation, explicit formatting, combobox transitions, cleanup, ordered ranges, stable sorting, calendar limits and labels, and the independent reference oracle |
+| Vanilla | 41 | Native forms and cleanup; tabs, combobox, modal, tooltip, pagination, expanded input controls, popover/menu/toasts, toggle groups, feedback/consent, tree, carousel, sorting, Calendar/DatePicker, and imports without browser globals |
+| React | 34 | Initial form/interaction cases and focused hydration; expanded form/reset behavior, calendars and unsupported-date validity, menu/popover/tree, sorting, notifications/consent/feedback, all 77 entries server-rendered, and layout variable assertions |
+| Vue | 28 | Initial forms/interaction and focused hydration; expanded input/reset/readonly cases, file rejection, calendars and controlled calendar-policy/error associations, overlays/tree, sorting/platform actions, and server-rendered layout variables |
+| Angular | 19 | Initial forms/combobox/tabs; expanded CVAs and form reset, repeated values, range constraints, calendar/date-picker switching and reactive/template validation, menu/tree, stable sorting, and layout variables |
+
+Sources: [core tests](../packages/core/test/core.test.ts), [vanilla behavior](../packages/vanilla/test/vanilla.test.ts), [vanilla server imports](../packages/vanilla/test/ssr.test.ts), [React behavior](../packages/react/react.interaction.test.tsx), [React server rendering](../packages/react/react.ssr.test.tsx), [Vue behavior](../packages/vue/test/components.test.ts), [Vue server rendering](../packages/vue/test/ssr.test.ts), and [Angular behavior](../packages/angular/test/components.test.ts).
+
+Expansion sources: [core helpers](../packages/core/test/expansion.test.ts), [calendar oracle](../packages/core/test/calendar-oracle.test.ts), vanilla [controls](../packages/vanilla/test/controls.test.ts), [calendars](../packages/vanilla/test/calendar.test.ts), and [content](../packages/vanilla/test/content.test.ts); React [behavior](../packages/react/react.expansion.test.tsx) and [SSR/layout](../packages/react/react.expansion.ssr.test.tsx); Vue [behavior/layout](../packages/vue/test/expansion.test.ts) and [calendar policy](../packages/vue/test/datepicker-policy.test.ts); Angular [expansion behavior/forms](../packages/angular/test/expansion.test.ts).
+
+The calendar oracle checks **55,991 supported days**, matching the pinned Python HijriDate conversion digest and every reverse conversion. This establishes agreement with that reference dataset. It does not certify agreement with the latest live official KACST service, which was not bulk-verified. [Calendar reliability](date-calendars.md) documents provenance, hard bounds, historical/future limitations, and why generic host `Intl` conversion is not the canonical source.
+
+The [React hydration case](../packages/react/react.hydration.test.tsx) and [Vue hydration case](../packages/vue/test/hydration.test.ts) render server markup, hydrate it, verify stable accessible IDs and retained server DOM, check the absence of mismatch/recovery warnings, and exercise RTL Tabs and Combobox selection after hydration. They include Field/TextField and a closed Dialog. They establish those cases on the tested versions, not every component state, framework integration, or native modal lifecycle during hydration.
+
+Targeted DatePicker regressions also assert canonical selected-date output while the popup is closed: associations with the native input/help text, calendar switching without rewriting ISO values, and hiding unavailable output for empty or unsupported values. Vanilla additionally checks typed-input updates and native form reset.
+
+DOM-based unit and hydration tests use a simulated DOM. Dialog methods are mocked where that environment lacks native modality; real browser checks provide the complementary modal/focus evidence.
+
+## Playground browser matrix
+
+The [original 17-test suite](../tests/browser/playground.spec.ts) exercises three product journeys: service discovery, a conditional application with review and local completion, and request management with filtering, selected-record export, and actionable detail. It also directly checks RTL Tabs, explicit Combobox commitment, native modal focus containment/restoration, and Tooltip focus/hover/Escape behavior.
+
+Layout checks cover **32 route/configuration combinations**: eight routes (`overview`, `foundations`, `components`, `discover`, `apply`, `workspace`, `docs`, and `brand`) at 1440 and 390 CSS pixels, in English/light/LTR and Arabic/dark/RTL. These checks assert no horizontal document overflow and exercise mobile navigation. They do not exhaust every language, theme, density, viewport, or mixed-direction configuration.
+
+The suite performs **eight axe scans**: `overview`, `components`, `apply`, and `workspace`, each in English/light and Arabic/dark. It uses the WCAG 2 A/AA, 2.1 A/AA, and 2.2 AA tags and reported no violations in those evaluated states. These scans use the Nasaq theme and the default density. They do not constitute a complete WCAG audit or assess every interactive state.
+
+The [ten expansion tests](../tests/browser/expansion.spec.ts) assert 77 live catalog recipes, selected input/form behavior, native DatePicker calendar switching and unsupported-date validity, menu/tree/carousel/sorting/feedback interactions, responsive layout editing, and the 22 native input types with local validation/reset. They also verify that the Arabic wordmark GIF loads, reduced-motion preference selects static SVG artwork, and no Aref Ruqaa font request is made. Four mobile cases cover `layouts` and `inputs` at 390 CSS pixels in English/light and Arabic/dark, each with an axe scan. A fifth expansion scan evaluates the open date-picker dialog. Together the root suites include **13 scoped axe scans**, plus the separately recorded framework scans.
+
+The [three-framework calendar script](../tests/browser/framework-calendars.mjs) checks React, Vue, and Angular examples in Chromium at 1280 and 390 CSS pixels. It asserts native modal state, unchanged ISO values on switching, canonical displayed labels, keyboard date selection, reopening at the selection, unsupported-Hijri submission blocking and Gregorian recovery, two-column to one-column layout, no page overflow, and no page errors. Its three axe scans target only the calendar showcase using WCAG 2 A/AA tags. These are focused browser scenarios, not framework-wide accessibility or hydration audits.
+
+## Token contrast scope
+
+The [eight token checks](../packages/tokens/test/contrast.test.mjs) evaluate selected foreground/background pairs in Nasaq and DGA reference themes, in light and dark modes. They assert 4.5:1 for the named text/status pairs and 3:1 for the named control/focus boundaries. This validates those solid-color pairings, not arbitrary custom overrides, all visual compositions, or the accuracy of official DGA token matching.
+
+## Component catalog interpretation
+
+[components.json](../components.json) lists all **77 entries** as built in all four adapters. A component's `verified` array is narrower: it identifies adapters with direct behavior, semantic-association, or layout-contract assertions mapped in that component's `evidence`. Rendering-only checks and broad journey scans are recorded at the suite level rather than used to mark every component behavior verified. An empty array means no direct component evidence is recorded there; it does not mean the source is absent. No full variant, native-input/browser, or component-by-framework state matrix is implied.
+
+## Reproduce the checks
+
+From the project directory, using the pinned pnpm version:
+
+```sh
+pnpm install
+pnpm build
+pnpm typecheck:playground
+pnpm test
+pnpm test:browser
+pnpm check:packages
+```
+
+The root and framework browser configurations use `NASAQ_CHROMIUM` when supplied, otherwise `/usr/bin/chromium` if available, otherwise Playwright's managed Chromium. If neither is installed, install the managed browser with `pnpm exec playwright install chromium`. To select an existing executable in a POSIX shell:
+
+```sh
+NASAQ_CHROMIUM=/path/to/chromium pnpm test:browser
+```
+
+The separate committed framework browser checks are:
+
+```sh
+pnpm exec playwright test --config examples/react/playwright.config.ts
+pnpm --filter @nasaq/example-angular test:browser
+node tests/browser/framework-calendars.mjs
+```
+
+The calendar script accepts an optional `react`, `angular`, or `vue` argument. Run it after package builds; it starts local example servers when needed. `pnpm check` groups build, unit/token, and root browser checks; the isolated package check and separate framework browser commands remain explicit. Re-run relevant checks after implementation changes and update the evidence rather than treating this snapshot as permanent.
+
+## Remaining evaluation
+
+Firefox and WebKit have not been covered by these runs. Manual screen-reader testing, a complete keyboard/accessibility audit, exhaustive mode/theme/density combinations, and a broader framework-version matrix remain open. Angular production AOT consumer integration and Angular SSR/hydration are not established. React/Vue hydration coverage is limited to the focused cases described above. The exact official DGA guideline/token mapping and redistribution permissions remain separate work in [alignment](alignment.md).
+
+These checks describe this source and guide snapshot; later changes require relevant checks again. The GitHub Pages workflow builds and deploys the guide independently. npm packages are not yet published. Follow the [release gates](publication.md) before distributing registry packages.

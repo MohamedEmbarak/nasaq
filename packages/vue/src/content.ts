@@ -1,0 +1,431 @@
+import { defineComponent, h, mergeProps } from "vue";
+import type { PropType, VNodeChild } from "vue";
+import { formatNumber, sortRows } from "@nasaq/core";
+import { Button } from "./forms.js";
+import { Avatar } from "./display.js";
+import { useValue } from "./shared.js";
+
+export const Link = defineComponent({
+  name: "NqLink",
+  inheritAttrs: false,
+  props: { href: String, disabled: Boolean, external: Boolean },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h(
+        "a",
+        mergeProps(attrs, {
+          class: "nq-link",
+          href: props.disabled ? undefined : props.href,
+          target: props.external ? "_blank" : attrs.target,
+          rel: props.external ? "noopener noreferrer" : attrs.rel,
+          "aria-disabled": props.disabled || undefined,
+          tabindex: props.disabled ? -1 : attrs.tabindex,
+          onClick: (event: MouseEvent) => {
+            if (props.disabled) event.preventDefault();
+          },
+        }),
+        slots.default?.(),
+      );
+  },
+});
+export const IconButton = defineComponent({
+  name: "NqIconButton",
+  inheritAttrs: false,
+  props: {
+    label: { type: String, required: true },
+    variant: {
+      type: String as PropType<"primary" | "secondary" | "ghost" | "danger">,
+      default: "ghost",
+    },
+    size: { type: String as PropType<"sm" | "md" | "lg">, default: "md" },
+    disabled: Boolean,
+    loading: Boolean,
+  },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h(
+        Button,
+        mergeProps(attrs, {
+          ...props,
+          class: "nq-icon-button",
+          "aria-label": props.label,
+        }),
+        () => h("span", { "aria-hidden": "true" }, slots.default?.()),
+      );
+  },
+});
+export const ButtonGroup = defineComponent({
+  name: "NqButtonGroup",
+  inheritAttrs: false,
+  props: { label: { type: String, required: true } },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h(
+        "div",
+        mergeProps(attrs, {
+          class: "nq-button-group",
+          role: "group",
+          "aria-label": props.label,
+        }),
+        slots.default?.(),
+      );
+  },
+});
+export const Chip = defineComponent({
+  name: "NqChip",
+  inheritAttrs: false,
+  props: {
+    label: String,
+    removable: Boolean,
+    disabled: Boolean,
+    removeLabel: { type: String, default: "Remove" },
+    tone: {
+      type: String as PropType<
+        "neutral" | "success" | "warning" | "danger" | "info"
+      >,
+      default: "neutral",
+    },
+  },
+  emits: { remove: () => true },
+  setup(props, { attrs, slots, emit }) {
+    return () =>
+      h(
+        "span",
+        mergeProps(attrs, { class: "nq-chip", "data-tone": props.tone }),
+        [
+          props.label ?? slots.default?.(),
+          props.removable &&
+            h(
+              Button,
+              {
+                variant: "ghost",
+                size: "sm",
+                disabled: props.disabled,
+                "aria-label": props.removeLabel,
+                onClick: () => emit("remove"),
+              },
+              () => "×",
+            ),
+        ],
+      );
+  },
+});
+export interface DescriptionItem {
+  term: string;
+  description: VNodeChild;
+}
+export const DescriptionList = defineComponent({
+  name: "NqDescriptionList",
+  inheritAttrs: false,
+  props: {
+    items: {
+      type: Array as PropType<readonly DescriptionItem[]>,
+      required: true,
+    },
+    variant: {
+      type: String as PropType<"stacked" | "horizontal" | "compact">,
+      default: "horizontal",
+    },
+  },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h(
+        "dl",
+        mergeProps(attrs, {
+          class: "nq-description-list",
+          "data-variant": props.variant,
+        }),
+        props.items.map((item, index) =>
+          h("div", { key: index }, [
+            h("dt", {}, item.term),
+            h("dd", {}, [
+              slots[`item:${index}`]?.({ item }) ?? item.description,
+            ]),
+          ]),
+        ),
+      );
+  },
+});
+export const Stat = defineComponent({
+  name: "NqStat",
+  inheritAttrs: false,
+  props: {
+    label: { type: String, required: true },
+    value: { type: [String, Number], required: true },
+    description: String,
+    locale: { type: String, default: "ar-SA" },
+    trend: String,
+  },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h("div", mergeProps(attrs, { class: "nq-stat" }), [
+        h("span", { class: "nq-stat-label" }, props.label),
+        h(
+          "strong",
+          { class: "nq-stat-value" },
+          typeof props.value === "number"
+            ? formatNumber(props.value, { locale: props.locale })
+            : props.value,
+        ),
+        props.description &&
+          h("p", { class: "nq-stat-description" }, props.description),
+        props.trend && h("span", { class: "nq-stat-trend" }, props.trend),
+        slots.default?.(),
+      ]);
+  },
+});
+export interface TimelineItem {
+  id: string;
+  title: string;
+  description?: string;
+  date?: string;
+  dateLabel?: string;
+  status?: "complete" | "current" | "upcoming";
+}
+export const Timeline = defineComponent({
+  name: "NqTimeline",
+  inheritAttrs: false,
+  props: {
+    items: { type: Array as PropType<readonly TimelineItem[]>, required: true },
+    label: { type: String, required: true },
+  },
+  setup(props, { attrs, slots }) {
+    return () =>
+      h(
+        "ol",
+        mergeProps(attrs, { class: "nq-timeline", "aria-label": props.label }),
+        props.items.map((item) =>
+          h(
+            "li",
+            {
+              key: item.id,
+              class: "nq-timeline-item",
+              "data-state": item.status,
+              "aria-current": item.status === "current" ? "step" : undefined,
+            },
+            [
+              h("h3", {}, item.title),
+              item.date &&
+                h("time", { datetime: item.date }, item.dateLabel ?? item.date),
+              item.description && h("p", {}, item.description),
+              slots[item.id]?.({ item }),
+            ],
+          ),
+        ),
+      );
+  },
+});
+export const Meter = defineComponent({
+  name: "NqMeter",
+  inheritAttrs: false,
+  props: {
+    label: { type: String, required: true },
+    value: { type: Number, required: true },
+    min: { type: Number, default: 0 },
+    max: { type: Number, default: 100 },
+    low: Number,
+    high: Number,
+    optimum: Number,
+  },
+  setup(props, { attrs }) {
+    return () =>
+      h(
+        "meter",
+        mergeProps(attrs, {
+          class: "nq-meter",
+          "aria-label": props.label,
+          value: props.value,
+          min: props.min,
+          max: props.max,
+          low: props.low,
+          high: props.high,
+          optimum: props.optimum,
+        }),
+      );
+  },
+});
+export interface AvatarItem {
+  name: string;
+  src?: string;
+  initials?: string;
+}
+export const AvatarGroup = defineComponent({
+  name: "NqAvatarGroup",
+  inheritAttrs: false,
+  props: {
+    items: { type: Array as PropType<readonly AvatarItem[]>, required: true },
+    max: { type: Number, default: 5 },
+    label: { type: String, required: true },
+    remainingLabel: {
+      type: Function as PropType<(count: number) => string>,
+      default: (count: number) => `${count} more people`,
+    },
+  },
+  setup(props, { attrs }) {
+    return () => {
+      const max = Math.max(1, Math.floor(props.max) || 5);
+      return h(
+        "div",
+        mergeProps(attrs, {
+          class: "nq-avatar-group",
+          role: "group",
+          "aria-label": props.label,
+        }),
+        [
+          ...props.items
+            .slice(0, max)
+            .map((item, index) => h(Avatar, { ...item, key: index })),
+          props.items.length > max &&
+            h(
+              "span",
+              {
+                class: "nq-avatar",
+                "aria-label": props.remainingLabel(props.items.length - max),
+              },
+              `+${props.items.length - max}`,
+            ),
+        ],
+      );
+    };
+  },
+});
+export interface DataColumn {
+  key: string;
+  label: string;
+  sortable?: boolean;
+  rowHeader?: boolean;
+}
+export const DataTable = defineComponent({
+  name: "NqDataTable",
+  inheritAttrs: false,
+  props: {
+    columns: { type: Array as PropType<readonly DataColumn[]>, required: true },
+    rows: {
+      type: Array as PropType<readonly Record<string, unknown>[]>,
+      required: true,
+    },
+    caption: { type: String, required: true },
+    sortKey: String,
+    defaultSortKey: { type: String, default: "" },
+    sortDirection: String as PropType<"ascending" | "descending">,
+    defaultSortDirection: {
+      type: String as PropType<"ascending" | "descending">,
+      default: "ascending",
+    },
+    locale: { type: String, default: "ar-SA" },
+    rowKey: Function as PropType<
+      (row: Record<string, unknown>, index: number) => string | number
+    >,
+    sortLabel: {
+      type: Function as PropType<
+        (column: DataColumn, direction: "ascending" | "descending") => string
+      >,
+      default: (column: DataColumn, direction: string) =>
+        `Sort ${column.label} ${direction}`,
+    },
+  },
+  emits: {
+    "update:sortKey": (_value: string) => true,
+    "update:sortDirection": (_value: "ascending" | "descending") => true,
+  },
+  setup(props, { attrs, slots, emit }) {
+    const key = useValue(
+      () => props.sortKey,
+      props.defaultSortKey,
+      (v) => emit("update:sortKey", v),
+    );
+    const direction = useValue(
+      () => props.sortDirection,
+      props.defaultSortDirection,
+      (v) => emit("update:sortDirection", v),
+    );
+    return () => {
+      const rows = key.value.value
+        ? sortRows(
+            props.rows,
+            key.value.value,
+            direction.value.value,
+            props.locale,
+          )
+        : props.rows;
+      return h("div", { class: "nq-table-wrap nq-data-table" }, [
+        h("table", mergeProps(attrs, { class: "nq-table" }), [
+          h("caption", {}, props.caption),
+          h(
+            "thead",
+            {},
+            h(
+              "tr",
+              {},
+              props.columns.map((column) => {
+                const active = column.key === key.value.value;
+                const next =
+                  active && direction.value.value === "ascending"
+                    ? "descending"
+                    : "ascending";
+                return h(
+                  "th",
+                  {
+                    key: column.key,
+                    scope: "col",
+                    "aria-sort": column.sortable
+                      ? active
+                        ? direction.value.value
+                        : "none"
+                      : undefined,
+                  },
+                  column.sortable
+                    ? h(
+                        "button",
+                        {
+                          type: "button",
+                          "aria-label": props.sortLabel(column, next),
+                          onClick: () => {
+                            key.set(column.key);
+                            direction.set(next);
+                          },
+                        },
+                        [
+                          column.label,
+                          h(
+                            "span",
+                            { "aria-hidden": "true" },
+                            active
+                              ? direction.value.value === "ascending"
+                                ? " ↑"
+                                : " ↓"
+                              : " ↕",
+                          ),
+                        ],
+                      )
+                    : column.label,
+                );
+              }),
+            ),
+          ),
+          h(
+            "tbody",
+            {},
+            rows.map((row, index) =>
+              h(
+                "tr",
+                { key: props.rowKey?.(row, index) ?? index },
+                props.columns.map((column) =>
+                  h(
+                    column.rowHeader ? "th" : "td",
+                    {
+                      key: column.key,
+                      scope: column.rowHeader ? "row" : undefined,
+                    },
+                    slots[`cell:${column.key}`]?.({ row, index }) ??
+                      String(row[column.key] ?? ""),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ]);
+    };
+  },
+});

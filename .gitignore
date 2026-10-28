@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.artifacts/
+apps/playground/public/brand/
+apps/playground/public/licenses/
+apps/playground/public/LICENSE
+apps/playground/public/NOTICE
+*.tsbuildinfo
+.env
+.env.*

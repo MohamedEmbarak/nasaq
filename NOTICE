@@ -1,0 +1,15 @@
+Nasaq — نسق
+Copyright 2026 Mohamed Embarak
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+This distribution includes an Umm al-Qura calendar table derived from
+HijriDate 2.3.0, Copyright (c) 2018 Mohammed Alshehri, licensed under MIT.
+The full notice and provenance are in packages/core/third-party in the
+source repository and third-party in the core package.
+
+Brand source fonts are licensed separately under the SIL Open Font License
+1.1. The unmodified notices accompany their files in brand/third-party.
+Font software and third-party dependencies retain their own licenses.
+The Nasaq name and identity do not imply endorsement by Saudi Arabia's
+Digital Government Authority. Apache 2.0 does not grant trademark rights.

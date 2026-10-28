@@ -1,0 +1,9 @@
+{
+  "source": "hijridate==2.3.0",
+  "artifactSHA256": "de59a435cf2598dcee2dc028a34cd9b17d1fa2f35379b32efca70ab81462edfa",
+  "from": "1924-08-01",
+  "through": "2077-11-16",
+  "days": 55991,
+  "serialization": "YYYY-MM-DD|HijriYear-HijriMonth-HijriDay\\n (unpadded Hijri)",
+  "conversionSHA256": "04cef6ba06a4bdab86a448733143268ce5ab67b699f4dd9f12289e335d4efca3"
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@nasaq/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Semantic design tokens for the independent Nasaq UI system",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "tokens.json",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.json": "./tokens.json"
+  },
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "build": "npm run generate && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/contrast.test.mjs"
+  },
+  "keywords": [
+    "nasaq",
+    "dga",
+    "sdga",
+    "platforms-code",
+    "saudi-design-system",
+    "arabic",
+    "rtl",
+    "ui-components",
+    "tokens"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedEmbarak/nasaq.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://mohamedembarak.github.io/nasaq/",
+  "bugs": {
+    "url": "https://github.com/MohamedEmbarak/nasaq/issues"
+  }
+}

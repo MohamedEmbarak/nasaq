@@ -1,0 +1,19 @@
+{
+  "status": "current",
+  "paletteDirection": "woven-rhythm",
+  "markBrief": "The Arabic word نسق alone. No separate symbol and no Latin lettering in the logo or loader. Preserve teal, mint, ivory and ink.",
+  "wordmark": {
+    "family": "Aref Ruqaa",
+    "weight": 700,
+    "languages": [
+      "ar"
+    ],
+    "distribution": "Outlined SVG paths only; source TTF and OFL are offline artwork inputs. No runtime font dependency.",
+    "uiTypography": "IBM Plex Sans Arabic and IBM Plex Sans unchanged"
+  },
+  "loader": "Arabic wordmark itself, reconstructed handwriting: connected noon descent through seen, then qaf head, bowl and terminal return, followed by a pen lift and noon diamond. Exact existing outline retained, including qaf's incorporated end marks. Transparent teal/white GIFs; 3.6-second loop, 90 frames at 25 fps; full-word hold, clear and restart without reverse erasing; static reduced-motion fallback.",
+  "scope": "Independent Nasaq identity. Upstream fonts retain their SIL Open Font License. No official endorsement, DGA certification, or trademark clearance is implied.",
+  "direction": "arabic-wordmark-only",
+  "mark": "outlined-arabic-nasaq",
+  "license": "Apache-2.0"
+}

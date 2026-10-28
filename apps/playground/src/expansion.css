@@ -1,0 +1,115 @@
+.brand-wordmark img {
+  inline-size: 160px;
+  block-size: 64px;
+  object-fit: contain;
+}
+.brand-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-loader img {
+  display: block;
+  inline-size: 64px;
+  block-size: 64px;
+}
+.layout-studio {
+  display: grid;
+  gap: 1.5rem;
+  min-inline-size: 0;
+}
+.layout-studio-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+.layout-studio-canvas {
+  inline-size: 100%;
+  margin-inline: auto;
+  border: 1px dashed var(--nq-color-border-strong);
+  border-radius: var(--nq-radius-lg);
+  background: var(--nq-color-surface-muted);
+  overflow: auto;
+}
+.layout-demo-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--nq-color-border);
+  border-radius: var(--nq-radius-md);
+  background: var(--nq-color-surface);
+  color: var(--nq-color-text);
+  overflow-wrap: anywhere;
+}
+.layout-demo-tile .nq-badge {
+  align-self: start;
+}
+.layout-demo-tile p {
+  margin: 0;
+  color: var(--nq-color-text-muted);
+  font-size: 0.875rem;
+}
+.integration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+}
+.integration-grid pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+}
+.input-lab-output {
+  max-inline-size: 100%;
+  overflow: auto;
+  padding: 1rem;
+  border-radius: var(--nq-radius-md);
+  background: var(--nq-color-surface-muted);
+  font-size: 0.8rem;
+}
+.component-preview > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.component-preview .nq-toast-region {
+  position: static;
+}
+.component-preview .nq-cookie-consent {
+  position: static;
+}
+.component-preview .nq-app-shell {
+  min-block-size: 12rem;
+}
+.component-preview .nq-menu-content,
+.component-preview .nq-popover-panel {
+  z-index: 5;
+}
+.component-preview .nq-calendar {
+  inline-size: 100%;
+}
+.component-preview .nq-portal-header {
+  flex-wrap: wrap;
+}
+.component-card:has([data-nq-panel]:not([hidden])) {
+  z-index: 5;
+}
+.catalog-controls {
+  flex-wrap: wrap;
+}
+.catalog-controls .filter-chips {
+  flex-wrap: wrap;
+}
+@media (max-width: 45rem) {
+  .layout-studio-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .layout-studio * {
+    transition: none;
+  }
+}

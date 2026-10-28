@@ -1,0 +1,104 @@
+# Gregorian and Hijri dates: the reliability decision
+
+For Saudi administrative interfaces, Nasaq uses an explicitly identified **Umm
+al-Qura reference table**, with a pinned version, documented provenance, and
+hard date limits. The selected value is a Gregorian ISO **date-only** string.
+Changing the display calendar changes its representation, never the day itself.
+
+“Most accurate Hijri calendar” needs a reference. Matching a Saudi civil record,
+predicting crescent visibility in Canada, and following an announced religious
+occasion are different requirements. No calculation can guarantee all three.
+
+## Research and source hierarchy
+
+1. **The Saudi authority:** KACST publishes the official Umm al-Qura calendar.
+   Its [official application listing](https://play.google.com/store/apps/details?id=sa.gov.kacst.ummulqura)
+   identifies KACST as publisher and links to [ummulqura.org.sa](https://ummulqura.org.sa/).
+   Saudi Ministry of Finance also directs calendar enquiries to
+   [KACST](https://www.mof.gov.sa/en/help/faq/Pages/faq_008.aspx).
+2. **Published reference data:** [HijriDate](https://hijridate.readthedocs.io/en/stable/background.html)
+   documents its month-start sources: newspaper archives (1343–1355 AH), KFUPM
+   comparative calendars (1356–1411), official comparative books (1412–1450),
+   and KACST website data (1451–1500). Its [benchmark](https://hijridate.readthedocs.io/en/stable/benchmarking.html)
+   describes checking 1,896 month starts and 55,991 days. These are upstream's
+   provenance/validation claims; Nasaq has not re-audited every original document.
+3. **Astronomical rules:** [Utrecht University's historical analysis](https://webspace.science.uu.nl/~gent0113/islam/ummalqura_rules.htm)
+   describes changes over time. Since 1423 AH, conjunction before sunset and
+   moonset after sunset at Makkah determine the next civil month. Applying the
+   current rule retroactively can disagree with a calendar actually published
+   for a historical year. Precomputed tables are therefore useful evidence,
+   rather than an inherently less accurate shortcut.
+4. **The Canadian claim:** the [Hilal Committee of Canada](https://www.hilalcommittee.ca/)
+   describes Diyanet crescent-visibility criteria (elongation 8°, altitude 5°).
+   This is a different criterion and purpose, not evidence of greater accuracy
+   against Saudi civil dates. No single internationally standardized “Canadian
+   Hijri calendar” was established by this research. A specific alternative
+   library should be evaluated by its actual algorithm and reference data.
+
+[Unicode distinguishes](https://cldr.unicode.org/development/development-process/design-proposals/islamic-calendar-types)
+generic `islamic`, arithmetic `islamic-civil`, `islamic-tbla`, `islamic-umalqura`,
+and Saudi sighting `islamic-rgsa`. Neither `ar-SA` locale nor an Arabic label
+selects the intended calculation reliably on its own.
+
+## Implementation
+
+- The runtime contains the MIT-licensed **HijriDate 2.3.0 month-start table**,
+  normalized to integer Julian days. See [provenance and artifact hashes](../packages/core/third-party/provenance.json)
+  and the [license](../packages/core/third-party/hijridate-LICENSE.txt).
+- `@internationalized/date` is pinned to **3.12.4** for calendar-date arithmetic,
+  using Nasaq's table-backed provider. Its built-in Umm al-Qura table is **not**
+  used to determine Hijri month starts. This keeps React, Vue, Angular, vanilla,
+  server rendering and browsers on the same data version.
+- Supported Hijri range: **1343-01-01 through 1500-12-30 AH**, corresponding to
+  **1924-08-01 through 2077-11-16**. Unsupported conversion fails explicitly;
+  it never silently becomes an arithmetic/civil calendar. Picker navigation
+  stops at the data boundary; unsupported adjacent grid cells cannot be selected.
+- Historical reference months can contain **28 or 31 days**. The source records
+  are retained rather than rewritten to fit a blanket 29/30 assumption.
+- `Intl` supplies language, month names and number shapes; it does not choose
+  the selected date or the table's month lengths. Use the dedicated calendar
+  conversion/formatting helpers for values that must agree with the picker.
+  The general `formatDate` helper uses the host's `Intl` implementation and is
+  not a canonical converter for persisted dual-calendar records.
+- Gregorian and Hijri pickers preserve ISO selection, min/max constraints,
+  form values, and reset behavior. Native date input text remains browser-owned
+  Gregorian; the popup explicitly selects Gregorian or **Umm al-Qura**.
+- A date has no time zone. Stored date-only strings are never round-tripped
+  through local-midnight `Date` objects. The “today” marker uses Asia/Riyadh;
+  applications handling timestamps should first choose their business time zone.
+
+## What verification establishes
+
+Nasaq compares every supported day's forward conversion against a SHA-256 oracle
+generated by the independently implemented, pinned Python HijriDate converter,
+and checks every reverse conversion. The [reproduction script](../scripts/import-ummalqura.py)
+checks the downloaded artifact's hash before rebuilding data or the oracle.
+This establishes agreement with the stated dataset, **not government certification**.
+
+During research, 1,137 of 1,896 month records differed in start date or month
+length between that reference and `@internationalized/date` 3.12.4's built-in
+Umm al-Qura implementation. The entire 1420–1450 AH interval agreed; differences
+appeared in older years and 1451 onwards. The built-in implementation also
+exhibited a range-edge failure at 1600 AH and arithmetic fallback outside its
+table. Broad runtime support alone therefore does not prove source agreement.
+
+## Limits and maintenance
+
+Live bulk verification against the official KACST service was unavailable from
+this environment. We do **not** claim that every historical/future date matches
+the latest version of that service. A [separate implementation's comparison](https://github.com/AsimNet/ummulqura-calendar#eras-and-civil-records)
+also reports differences between reconstructed official-service dates and
+historical published calendars, plus unresolved future differences. Its claims
+are corroborating evidence about the ambiguity, not Nasaq's runtime source.
+
+For identity records, preserve dates exactly as issued, alongside calendar/source
+metadata; do not overwrite an original Hijri or Gregorian field with a derived
+value. For dates tied to Ramadan, Eid, Hajj or official leave, consume the
+relevant official announcement; a civil picker is not a moon-sighting authority.
+For far-future deadlines, validate the governing source before committing them.
+
+Updates are deliberate: review original sources and version changes, regenerate
+the data and independent oracle, inspect every changed month, run conversion and
+four-adapter switching/boundary tests, and document the migration. Never fetch a
+third-party conversion API on each keystroke or silently change stored dates
+after a dependency update.
