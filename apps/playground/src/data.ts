@@ -183,6 +183,7 @@ export const paths: Record<string, string> = {
   palette:
     "M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h4a5 5 0 0 0 0-10h-4z M7 8h.01 M5 12h.01 M10 6h.01 M15 6h.01",
   arrow: "M5 12h14 M13 6l6 6-6 6",
+  "arrow-back": "M19 12H5 M11 6l-6 6 6 6",
   search: "M21 21l-5-5 M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0",
   check: "m5 12 4 4L19 6",
   chevron: "m9 5 7 7-7 7",
@@ -212,5 +213,6 @@ export const paths: Record<string, string> = {
   shield: "m12 2 9 4v6c0 5-9 10-9 10S3 17 3 12V6z m-5 10 3 3 6-6",
 };
 export function icon(name: string, size = 20) {
-  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name] || paths.grid}"/></svg>`;
+  const directional = name === "arrow" || name === "arrow-back" || name === "chevron";
+  return `<svg class="pg-icon${directional ? " pg-icon-directional" : ""}" data-icon="${escape(name)}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name] || paths.grid}"/></svg>`;
 }
